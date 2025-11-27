@@ -1,35 +1,51 @@
-.hero-slide {
-  position: relative;
+/* Force full width even if parent has padding */
+.hero-wrapper {
+  width: 100vw;
+  margin-left: calc(50% - 50vw);
+  margin-right: calc(50% - 50vw);
 }
 
+/* Slider container */
+.hero-slide {
+  width: 100%;
+  overflow: hidden;
+}
+
+/* Image fits entire width fully */
 .hero-image {
   width: 100%;
-  height: 550px;
+  height: auto;
+  display: block;
   object-fit: cover;
+  object-position: center;
 }
 
-.hero-text {
-  position: absolute;
-  top: 50%;
-  left: 60px;
-  transform: translateY(-50%);
+/* RESPONSIVE HEIGHTS */
+@media (min-width: 1200px) {
+  .hero-image {
+    height: 550px;
+  }
 }
 
-.hero-text h2 {
-  font-size: 48px;
-  font-family: "Playfair Display", serif;
-  margin-bottom: 15px;
+@media (max-width: 1200px) and (min-width: 768px) {
+  .hero-image {
+    height: 450px;
+  }
 }
 
-.hero-text button {
-  padding: 12px 28px;
-  border: 1px solid black;
-  background: transparent;
-  cursor: pointer;
-  transition: 0.3s ease;
+@media (max-width: 768px) {
+  .hero-image {
+    height: 350px;
+  }
 }
 
-.hero-text button:hover {
-  background: black;
-  color: white;
+@media (max-width: 480px) {
+  .hero-image {
+    height: 250px;
+  }
+}
+
+/* Remove body overflow scroll */
+body, html {
+  overflow-x: hidden;
 }

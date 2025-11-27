@@ -6,7 +6,7 @@ import Footer from "../components/Footer";
 export default function HomePage() {
   return (
     <>
-      <Navbar />
+      {/* <Navbar /> */}
       <HeroSlider />
       <FeaturedProducts />
       <Footer />

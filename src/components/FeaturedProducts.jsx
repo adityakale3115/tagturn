@@ -1,16 +1,27 @@
 import "./../styles/FeaturedProducts.css";
+import products from "../data/products";
+import { useNavigate } from "react-router-dom";
 
 export default function FeaturedProducts() {
+  const navigate = useNavigate();
+
   return (
     <div className="featured-section">
       <h2>FEATURED PRODUCTS</h2>
 
       <div className="product-grid">
-        {[1,2,3,4].map((item)=> (
-          <div key={item} className="product-card">
+        {products.map((item) => (
+          <div key={item.id} className="product-card">
             <div className="product-image"></div>
-            <p>Product {item}</p>
-            <span>₹999</span>
+            <p>{item.name}</p>
+            <span className="price">₹{item.price.toLocaleString()}</span>
+
+            <button
+              className="view-btn"
+              onClick={() => navigate(`/product/${item.id}`)}
+            >
+              View Details
+            </button>
           </div>
         ))}
       </div>
