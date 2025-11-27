@@ -1,0 +1,43 @@
+.featured-section {
+  padding: 50px 40px;
+}
+
+.featured-section h2 {
+  margin-bottom: 25px;
+  font-size: 20px;
+  font-weight: 600;
+}
+
+.product-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 25px;
+}
+
+.product-card {
+  border: 1px solid #ddd;
+  padding: 12px;
+  cursor: pointer;
+  transition: 0.3s ease;
+  border-radius: 5px;
+}
+
+.product-card:hover {
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+.product-image {
+  width: 100%;
+  height: 160px;
+  background: #eee;
+  border-radius: 5px;
+  margin-bottom: 12px;
+}
+
+.product-card p {
+  font-weight: 500;
+}
+
+.product-card span {
+  font-weight: 700;
+}
