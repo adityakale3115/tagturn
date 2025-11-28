@@ -7,18 +7,25 @@ export default function FeaturedProducts() {
 
   return (
     <div className="featured-section">
-      <h2>FEATURED PRODUCTS</h2>
+      <h2 className="featured-title">Featured Products</h2>
 
       <div className="product-grid">
         {products.map((item) => (
-          <div key={item.id} className="product-card">
-            <div className="product-image"></div>
-            <p>{item.name}</p>
+          <div key={item.id} className="product-card" onClick={() => navigate(`/product/${item.id}`)}>
+            
+            <div className="product-image">
+              <img src={item.images[0]} alt={item.name} />
+            </div>
+
+            <p className="product-name">{item.name}</p>
             <span className="price">₹{item.price.toLocaleString()}</span>
 
             <button
               className="view-btn"
-              onClick={() => navigate(`/product/${item.id}`)}
+              onClick={(e) => {
+                e.stopPropagation();
+                navigate(`/product/${item.id}`);
+              }}
             >
               View Details
             </button>
