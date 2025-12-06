@@ -1,84 +1,105 @@
 import { useParams, useNavigate } from "react-router-dom";
-import { useState } from "react";
-import products from "../data/products";
+import { useState, useEffect } from "react";
+import { db } from "../firebase/firebaseConfig";
+import { doc, getDoc, collection, query, where, getDocs } from "firebase/firestore";
 import "../styles/ProductDetails.css";
+import { Heart } from "lucide-react";
 
 export default function ProductDetails() {
   const { id } = useParams();
   const navigate = useNavigate();
 
-  const product = products.find((p) => p.id == id);
-
-  // Hooks must be here (NOT after conditional return)
+  const [product, setProduct] = useState(null);
+  const [relatedProducts, setRelatedProducts] = useState([]);
   const [quantity, setQuantity] = useState(1);
-  const [selectedSize, setSelectedSize] = useState(null);
-  const [activeImage, setActiveImage] = useState(product ? product.images[0] : "");
+  const [selectedSize, setSelectedSize] = useState("");
+  const [activeImage, setActiveImage] = useState("");
 
-  // If product not found → return after hooks
-  if (!product) {
-    return <div className="product-not-found">Product Not Found</div>;
-  }
+  const [loading, setLoading] = useState(true);
 
-  const relatedProducts = products.filter(
-    (p) => p.category === product.category && p.id !== product.id
-  );
+  // Fetch Product
+  useEffect(() => {
+    const fetchProduct = async () => {
+      try {
+        const docRef = doc(db, "products", id);
+        const snap = await getDoc(docRef);
 
-  const decreaseQty = () => {
-    if (quantity > 1) setQuantity(quantity - 1);
+        if (snap.exists()) {
+          const data = snap.data();
+          setProduct({ id: snap.id, ...data });
+          setActiveImage(data.images?.[0] || "");
+          fetchRelatedProducts(data.category, snap.id);
+        } else {
+          setProduct(null);
+        }
+
+      } catch (err) {
+        console.error("Error loading product:", err);
+      }
+      setLoading(false);
+    };
+
+    fetchProduct();
+  }, [id]);
+
+  // Fetch related products
+  const fetchRelatedProducts = async (category, productId) => {
+    const q = query(collection(db, "products"), where("category", "==", category));
+    const snap = await getDocs(q);
+
+    const filtered = snap.docs
+      .map(doc => ({ id: doc.id, ...doc.data() }))
+      .filter(p => p.id !== productId);
+
+    setRelatedProducts(filtered);
   };
 
-  const increaseQty = () => {
-    if (quantity < product.stock) setQuantity(quantity + 1);
-  };
 
-  const handleShare = () => {
-    if (navigator.share) {
-      navigator.share({
-        title: product.name,
-        text: product.shortDesc,
-        url: window.location.href
-      });
-    } else {
-      alert("Sharing not supported on this device.");
-    }
-  };
+  // Waiting state
+  if (loading) return <p style={{ textAlign: "center", marginTop: 50 }}>Loading...</p>;
+
+  // Not found state
+  if (!product) return <div className="product-not-found">Product Not Found</div>;
+
+
+  // Quantity functions
+  const decreaseQty = () => quantity > 1 && setQuantity(quantity - 1);
+  const increaseQty = () => quantity < product.stock && setQuantity(quantity + 1);
+
 
   return (
     <>
       <div className="product-page">
-        
-        {/* LEFT SIDE IMAGE + THUMBNAILS */}
+
+        {/* LEFT SECTION */}
         <div className="left">
           <img src={activeImage} className="big-image" alt={product.name} />
 
           <div className="thumbnail-row">
-            {product.images.map((img, i) => (
+            {product.images?.map((img, i) => (
               <img
                 key={i}
                 src={img}
+                alt=""
                 className={`thumbnail ${activeImage === img ? "active-thumb" : ""}`}
                 onClick={() => setActiveImage(img)}
-                alt=""
               />
             ))}
           </div>
         </div>
 
-        {/* RIGHT SIDE DETAILS */}
+        {/* RIGHT SECTION */}
         <div className="right">
           <h3 className="brand">THE TAGTURN STORE</h3>
           <h1>{product.name}</h1>
 
-          <p className="sold-by">Sold By: <b>{product.seller}</b></p>
+          <h2 className="price">₹{product.price}</h2>
+          <p className="stock">🟢 {product.stock} items available</p>
 
-          <h2 className="price">₹{product.price.toLocaleString()}</h2>
-
-          <p className="stock">🟢 {product.stock} items left in stock</p>
-
-          {/* SIZE OPTIONS */}
-          {product.sizes && (
+          {/* Size Selector */}
+          {product.sizes?.length > 0 && (
             <div className="size-box">
-              <p className="label">Available Sizes</p>
+              <p className="label">Select Size</p>
               <div className="size-options">
                 {product.sizes.map((size) => (
                   <button
@@ -93,7 +114,7 @@ export default function ProductDetails() {
             </div>
           )}
 
-          {/* QUANTITY */}
+          {/* Quantity */}
           <div className="qty-box">
             <p className="label">Quantity</p>
             <div className="qty-control">
@@ -106,18 +127,16 @@ export default function ProductDetails() {
           <button className="add-cart-btn">Add to Cart</button>
           <button className="buy-btn">BUY NOW</button>
 
-          <p className="short-desc">{product.shortDesc}</p>
-
-          <button className="share-btn" onClick={handleShare}>📤 Share</button>
-
-          <div className="details">
-            <h3>Description</h3>
-            <p>{product.description}</p>
-          </div>
+          {product.description && (
+            <div className="details">
+              <h3>Description</h3>
+              <p>{product.description}</p>
+            </div>
+          )}
         </div>
       </div>
 
-      {/* RELATED PRODUCTS */}
+      {/* Related Products */}
       {relatedProducts.length > 0 && (
         <div className="related-section">
           <h2>Similar {product.category}</h2>
@@ -128,9 +147,9 @@ export default function ProductDetails() {
                 className="related-card"
                 onClick={() => navigate(`/product/${item.id}`)}
               >
-                <img src={item.images[0]} alt="" />
+                <img src={item.images?.[0]} alt="" />
                 <p>{item.name}</p>
-                <span>₹{item.price.toLocaleString()}</span>
+                <span>₹{item.price}</span>
               </div>
             ))}
           </div>
