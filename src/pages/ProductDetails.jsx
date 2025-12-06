@@ -1,13 +1,16 @@
 import { useParams, useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { db } from "../firebase/firebaseConfig";
-import { doc, getDoc, collection, query, where, getDocs } from "firebase/firestore";
+import { doc, getDoc, collection, query, where, getDocs, setDoc, updateDoc } from "firebase/firestore";
 import "../styles/ProductDetails.css";
 import { Heart } from "lucide-react";
+import { toast } from "react-toastify";
+import useAuthListener from "../hooks/useAuthListener";
 
 export default function ProductDetails() {
   const { id } = useParams();
   const navigate = useNavigate();
+  const user = useAuthListener();
 
   const [product, setProduct] = useState(null);
   const [relatedProducts, setRelatedProducts] = useState([]);
@@ -16,6 +19,7 @@ export default function ProductDetails() {
   const [activeImage, setActiveImage] = useState("");
 
   const [loading, setLoading] = useState(true);
+
 
   // Fetch Product
   useEffect(() => {
@@ -42,6 +46,7 @@ export default function ProductDetails() {
     fetchProduct();
   }, [id]);
 
+
   // Fetch related products
   const fetchRelatedProducts = async (category, productId) => {
     const q = query(collection(db, "products"), where("category", "==", category));
@@ -55,14 +60,53 @@ export default function ProductDetails() {
   };
 
 
-  // Waiting state
-  if (loading) return <p style={{ textAlign: "center", marginTop: 50 }}>Loading...</p>;
+  // ⭐ ADD TO CART FUNCTION
+  const addToCart = async () => {
+    if (!user) {
+      toast.warning("Please login first");
+      return navigate("/login");
+    }
 
-  // Not found state
+    if (!selectedSize && product.sizes?.length > 0) {
+      return toast.error("Please select a size");
+    }
+
+    try {
+      const cartRef = doc(db, "users", user.uid, "cart", product.id);
+
+      const itemData = {
+        productId: product.id,
+        name: product.name,
+        price: product.price,
+        image: product.images?.[0],
+        size: selectedSize || null,
+        quantity,
+        addedAt: new Date()
+      };
+
+      // If product already in cart → increase qty instead of replace
+      const existing = await getDoc(cartRef);
+
+      if (existing.exists()) {
+        await updateDoc(cartRef, {
+          quantity: existing.data().quantity + quantity
+        });
+      } else {
+        await setDoc(cartRef, itemData);
+      }
+
+      toast.success("Added to cart!");
+    } catch (error) {
+      console.error(error);
+      toast.error("Failed to add to cart");
+    }
+  };
+
+
+  // UI / States
+  if (loading) return <p style={{ textAlign: "center", marginTop: 50 }}>Loading...</p>;
   if (!product) return <div className="product-not-found">Product Not Found</div>;
 
-
-  // Quantity functions
   const decreaseQty = () => quantity > 1 && setQuantity(quantity - 1);
   const increaseQty = () => quantity < product.stock && setQuantity(quantity + 1);
 
@@ -124,19 +168,15 @@ export default function ProductDetails() {
             </div>
           </div>
 
-          <button className="add-cart-btn">Add to Cart</button>
-          <button className="buy-btn">BUY NOW</button>
+          {/* BUTTONS */}
+          <button className="add-cart-btn" onClick={addToCart}>Add to Cart</button>
+          <button className="buy-btn" onClick={() => { addToCart(); navigate("/cart"); }}>BUY NOW</button>
 
-          {product.description && (
-            <div className="details">
-              <h3>Description</h3>
-              <p>{product.description}</p>
-            </div>
-          )}
         </div>
       </div>
 
-      {/* Related Products */}
+
+      {/* RELATED PRODUCTS */}
       {relatedProducts.length > 0 && (
         <div className="related-section">
           <h2>Similar {product.category}</h2>

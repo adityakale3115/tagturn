@@ -1,7 +1,254 @@
+/* Footer.css - E-commerce Footer */
+
+/* Main Footer */
 .footer {
-  text-align: center;
-  padding: 20px;
+  background: #f8fafc;
+  border-top: 1px solid #e5e7eb;
+  padding: 60px 40px 32px;
+  margin-top: 80px;
+}
+
+.footer-container {
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+/* Footer Grid */
+.footer-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 48px;
+  margin-bottom: 48px;
+}
+
+/* Footer Column */
+.footer-column {
+  display: flex;
+  flex-direction: column;
+}
+
+.footer-title {
+  font-size: 16px;
+  font-weight: 700;
+  color: #0f172a;
+  margin-bottom: 20px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.footer-links {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.footer-link {
+  color: #64748b;
+  text-decoration: none;
   font-size: 14px;
-  border-top: 1px solid #eee;
-  color: grey;
+  font-weight: 500;
+  transition: all 0.2s;
+  display: inline-block;
+}
+
+.footer-link:hover {
+  color: #0f172a;
+  padding-left: 4px;
+}
+
+.footer-link.view-more {
+  color: #0284c7;
+  font-weight: 600;
+  margin-top: 8px;
+}
+
+.footer-link.view-more:hover {
+  color: #0369a1;
+  text-decoration: underline;
+}
+
+/* Features Section */
+.footer-features {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 48px;
+  padding: 32px 0;
+  border-top: 1px solid #e5e7eb;
+  border-bottom: 1px solid #e5e7eb;
+  margin-bottom: 32px;
+}
+
+.feature-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  color: #64748b;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.feature-icon {
+  width: 40px;
+  height: 40px;
+  background: white;
+  border: 2px solid #e5e7eb;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #0f172a;
+}
+
+/* App Download Section */
+.app-section {
+  text-align: center;
+  margin-bottom: 32px;
+}
+
+.app-title {
+  font-size: 15px;
+  font-weight: 600;
+  color: #64748b;
+  margin-bottom: 16px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.app-badges {
+  display: flex;
+  justify-content: center;
+  gap: 16px;
+}
+
+.app-badge {
+  height: 44px;
+  cursor: pointer;
+  transition: transform 0.3s;
+}
+
+.app-badge:hover {
+  transform: translateY(-2px);
+}
+
+/* Social Section */
+.social-section {
+  text-align: center;
+  padding-top: 24px;
+  border-top: 1px solid #e5e7eb;
+}
+
+.social-label {
+  font-size: 14px;
+  font-weight: 600;
+  color: #64748b;
+  margin-bottom: 16px;
+}
+
+.social-icons {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  margin-bottom: 24px;
+}
+
+.social-icon {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.3s;
+  text-decoration: none;
+  color: white;
+  font-size: 18px;
+}
+
+.social-icon.facebook {
+  background: #1877f2;
+}
+
+.social-icon.instagram {
+  background: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%);
+}
+
+.social-icon.youtube {
+  background: #ff0000;
+}
+
+.social-icon.twitter {
+  background: #000000;
+}
+
+.social-icon:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+/* Copyright */
+.footer-copyright {
+  text-align: center;
+  font-size: 13px;
+  color: #94a3b8;
+  padding-top: 24px;
+  border-top: 1px solid #e5e7eb;
+}
+
+.footer-copyright strong {
+  color: #0f172a;
+  font-weight: 600;
+}
+
+/* Responsive Design - Tablet */
+@media (max-width: 968px) {
+  .footer {
+    padding: 48px 32px 24px;
+  }
+
+  .footer-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 32px;
+  }
+
+  .footer-features {
+    flex-direction: column;
+    gap: 20px;
+  }
+}
+
+/* Responsive Design - Mobile */
+@media (max-width: 640px) {
+  .footer {
+    padding: 40px 20px 24px;
+  }
+
+  .footer-grid {
+    grid-template-columns: 1fr;
+    gap: 32px;
+  }
+
+  .footer-features {
+    gap: 16px;
+  }
+
+  .app-badges {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .app-badge {
+    height: 40px;
+  }
+
+  .social-icons {
+    gap: 8px;
+  }
+
+  .social-icon {
+    width: 40px;
+    height: 40px;
+    font-size: 16px;
+  }
 }

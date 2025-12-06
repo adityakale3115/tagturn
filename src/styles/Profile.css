@@ -1,0 +1,458 @@
+/* Profile.css - User Profile Page */
+
+/* Animations */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideInLeft {
+  from {
+    opacity: 0;
+    transform: translateX(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+/* Main Container */
+.profile-page {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 40px;
+  display: grid;
+  grid-template-columns: 320px 1fr;
+  gap: 32px;
+  animation: fadeIn 0.6s ease-out;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+}
+
+/* Sidebar */
+.profile-sidebar {
+  animation: slideInLeft 0.7s ease-out;
+}
+
+/* User Card */
+.user-card {
+  background: white;
+  border-radius: 16px;
+  padding: 32px 24px;
+  text-align: center;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+  border: 1px solid #f1f5f9;
+  margin-bottom: 20px;
+}
+
+.user-name {
+  font-size: 20px;
+  font-weight: 700;
+  color: #0f172a;
+  margin: 0 0 8px 0;
+}
+
+.user-email {
+  font-size: 14px;
+  color: #64748b;
+  margin: 0 0 16px 0;
+  word-break: break-word;
+}
+
+.membership-link {
+  font-size: 13px;
+  color: #dc2626;
+  text-decoration: none;
+  font-weight: 600;
+  display: inline-block;
+  transition: color 0.2s;
+  cursor: pointer;
+}
+
+.membership-link:hover {
+  color: #991b1b;
+  text-decoration: underline;
+}
+
+/* Navigation Menu */
+.profile-nav {
+  background: white;
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+  border: 1px solid #f1f5f9;
+  margin-bottom: 20px;
+}
+
+.nav-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 18px 24px;
+  border-bottom: 1px solid #f1f5f9;
+  cursor: pointer;
+  transition: all 0.2s;
+  color: #1e293b;
+  font-size: 15px;
+  font-weight: 500;
+}
+
+.nav-item:last-child {
+  border-bottom: none;
+}
+
+.nav-item:hover {
+  background: #f8fafc;
+  padding-left: 28px;
+}
+
+.nav-item.active {
+  background: #f0f9ff;
+  color: #0284c7;
+  border-left: 3px solid #0284c7;
+  font-weight: 600;
+}
+
+.nav-badge {
+  padding: 4px 10px;
+  background: #dcfce7;
+  color: #15803d;
+  font-size: 12px;
+  font-weight: 600;
+  border-radius: 6px;
+}
+
+/* Action Buttons */
+.action-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.action-btn {
+  width: 100%;
+  padding: 14px 20px;
+  font-size: 14px;
+  font-weight: 600;
+  border: 2px solid #e5e7eb;
+  border-radius: 10px;
+  background: white;
+  cursor: pointer;
+  transition: all 0.3s;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+}
+
+.action-btn.delete {
+  color: #dc2626;
+  border-color: #fecaca;
+}
+
+.action-btn.delete:hover {
+  background: #fef2f2;
+  border-color: #dc2626;
+}
+
+.action-btn.logout {
+  color: #64748b;
+}
+
+.action-btn.logout:hover {
+  background: #f8fafc;
+  border-color: #cbd5e1;
+}
+
+/* Main Content Area */
+.profile-content {
+  animation: fadeIn 0.8s ease-out;
+}
+
+.profile-content h1 {
+  font-size: 28px;
+  font-weight: 700;
+  color: #0f172a;
+  margin: 0 0 32px 0;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* Form Section */
+.form-section {
+  background: white;
+  border-radius: 16px;
+  padding: 28px 32px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+  border: 1px solid #f1f5f9;
+  margin-bottom: 24px;
+}
+
+.form-section label {
+  display: block;
+  font-size: 14px;
+  font-weight: 600;
+  color: #374151;
+  margin-bottom: 8px;
+}
+
+/* Form Fields */
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+  background: white;
+  border-radius: 16px;
+  padding: 28px 32px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+  border: 1px solid #f1f5f9;
+  margin-bottom: 24px;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+}
+
+.form-group label {
+  font-size: 14px;
+  font-weight: 600;
+  color: #374151;
+  margin-bottom: 8px;
+}
+
+.form-label.required::after,
+.form-group label.required::after {
+  content: " *";
+  color: #dc2626;
+}
+
+.form-input,
+.form-group input {
+  padding: 12px 16px;
+  font-size: 15px;
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  outline: none;
+  transition: all 0.2s;
+  background: #f9fafb;
+  color: #1e293b;
+  font-family: inherit;
+}
+
+.form-input:focus,
+.form-group input:focus {
+  border-color: #0284c7;
+  background: white;
+  box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.1);
+}
+
+.form-input:disabled {
+  background: #f1f5f9;
+  color: #94a3b8;
+  cursor: not-allowed;
+}
+
+.form-input::placeholder,
+.form-group input::placeholder {
+  color: #cbd5e1;
+}
+
+/* Gender Section */
+.profile-content > label {
+  display: block;
+  font-size: 14px;
+  font-weight: 600;
+  color: #374151;
+  margin-bottom: 12px;
+  background: white;
+  border-radius: 16px 16px 0 0;
+  padding: 28px 32px 12px 32px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+  border: 1px solid #f1f5f9;
+  border-bottom: none;
+}
+
+.gender-options {
+  display: flex;
+  gap: 32px;
+  background: white;
+  border-radius: 0 0 16px 16px;
+  padding: 0 32px 28px 32px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+  border: 1px solid #f1f5f9;
+  border-top: none;
+  margin-bottom: 24px;
+}
+
+.gender-options label {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+  font-size: 15px;
+  color: #4b5563;
+  font-weight: 500;
+}
+
+.gender-options input[type="radio"] {
+  width: 18px;
+  height: 18px;
+  cursor: pointer;
+  accent-color: #0284c7;
+}
+
+/* Textarea */
+.form-textarea {
+  width: 100%;
+  min-height: 120px;
+  padding: 12px 16px;
+  font-size: 15px;
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  outline: none;
+  transition: all 0.2s;
+  background: #f9fafb;
+  color: #1e293b;
+  font-family: inherit;
+  resize: vertical;
+  box-sizing: border-box;
+}
+
+.form-textarea:focus {
+  border-color: #0284c7;
+  background: white;
+  box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.1);
+}
+
+.form-textarea::placeholder {
+  color: #cbd5e1;
+}
+
+/* Address Section */
+.profile-content > label[style*="marginTop"] {
+  margin-top: 24px;
+  border-radius: 16px 16px 0 0;
+}
+
+.profile-content > .form-textarea {
+  background: white;
+  border-radius: 0 0 16px 16px;
+  margin: 0 0 24px 0;
+  padding: 16px 32px 28px 32px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+  border: 1px solid #f1f5f9;
+  border-top: none;
+}
+
+/* Save Button */
+.save-btn {
+  width: 100%;
+  padding: 16px;
+  font-size: 16px;
+  font-weight: 600;
+  color: white;
+  background: linear-gradient(135deg, #0ea5e9 0%, #10b981 100%);
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 16px rgba(14, 165, 233, 0.4);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.save-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 24px rgba(14, 165, 233, 0.5);
+}
+
+.save-btn:active {
+  transform: translateY(0);
+}
+
+.save-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* Loading State */
+.loading-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 60vh;
+  font-size: 16px;
+  color: #64748b;
+}
+
+/* Responsive Design - Tablet */
+@media (max-width: 968px) {
+  .profile-page {
+    grid-template-columns: 1fr;
+    padding: 24px;
+    gap: 24px;
+  }
+
+  .profile-sidebar {
+    order: 2;
+  }
+
+  .profile-content {
+    order: 1;
+  }
+
+  .form-section,
+  .form-row {
+    padding: 24px;
+  }
+}
+
+/* Responsive Design - Mobile */
+@media (max-width: 640px) {
+  .profile-page {
+    padding: 16px;
+  }
+
+  .form-row {
+    grid-template-columns: 1fr;
+    gap: 20px;
+    padding: 20px;
+  }
+
+  .form-section {
+    padding: 20px;
+    border-radius: 12px;
+  }
+
+  .user-card {
+    padding: 24px 20px;
+  }
+
+  .profile-content h1 {
+    font-size: 22px;
+  }
+
+  .nav-item {
+    padding: 16px 20px;
+  }
+
+  .gender-options {
+    flex-direction: column;
+    gap: 12px;
+    padding: 0 20px 20px 20px;
+  }
+
+  .profile-content > label {
+    padding: 20px 20px 12px 20px;
+  }
+
+  .profile-content > .form-textarea {
+    padding: 16px 20px 20px 20px;
+  }
+}
