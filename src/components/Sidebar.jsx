@@ -7,6 +7,14 @@ export default function Sidebar({ isOpen, onClose }) {
   const navigate = useNavigate();
   const user = useAuthListener();
 
+  const logout = () => {
+    import("firebase/auth").then(({ getAuth }) => {
+      getAuth().signOut();
+      onClose();
+      navigate("/");
+    });
+  };
+
   return (
     <>
       {isOpen && <div className="sidebar-overlay" onClick={onClose}></div>}
@@ -25,31 +33,25 @@ export default function Sidebar({ isOpen, onClose }) {
 
         <hr className="sidebar-divider" />
 
+        {/* Show Login/Register if NOT logged in */}
         {!user && (
           <div className="sidebar-item" onClick={() => navigate("/login")}>
             <FiUser size={18} /> Login / Register
           </div>
         )}
 
+        {/* Show profile if logged in */}
         {user && (
           <div className="sidebar-item" onClick={() => navigate("/profile")}>
-            <FiUser size={18} /> My Account
+            <FiUser size={18} /> My Profile
           </div>
         )}
 
+        {/* Logout for logged in users */}
         {user && (
           <>
             <hr className="sidebar-divider" />
-            <div
-              className="sidebar-item logout"
-              onClick={() => {
-                import("firebase/auth").then(({ getAuth }) => {
-                  getAuth().signOut();
-                  onClose();
-                  navigate("/");
-                });
-              }}
-            >
+            <div className="sidebar-item logout" onClick={logout}>
               <FiLogOut size={18} /> Logout
             </div>
           </>

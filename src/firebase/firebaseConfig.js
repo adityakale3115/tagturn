@@ -4,15 +4,14 @@ import { getAuth } from "firebase/auth";
 import { getStorage } from "firebase/storage";
 
 const firebaseConfig = {
-  apiKey: "AIzaSyAAjYR83E0LNIdmqv7aISD9Dvkn2XMXyR8",
-  authDomain: "tagturn-9a83f.firebaseapp.com",
-  projectId: "tagturn-9a83f",
-  storageBucket: "tagturn-9a83f.firebasestorage.app",
-  messagingSenderId: "541026979614",
-  appId: "1:541026979614:web:44a8f8ef30507d9fbf030f",
-  measurementId: "G-3P7XQJXDQV"
+  apiKey: "AIzaSyBTu8YqXvUGdW4Oh7sOIIqXi1i1xsFBPE0",
+  authDomain: "medimateai-c1e36.firebaseapp.com",
+  projectId: "medimateai-c1e36",
+  storageBucket: "medimateai-c1e36.firebasestorage.app",
+  messagingSenderId: "339022812872",
+  appId: "1:339022812872:web:5b95cf4e8f3dd0bee6b7fd",
+  measurementId: "G-2WFJEDC8QJ"
 };
-
 const app = initializeApp(firebaseConfig);
 
 export const db = getFirestore(app);
