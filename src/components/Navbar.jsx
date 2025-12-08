@@ -14,8 +14,6 @@ export default function Navbar() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [suggestions, setSuggestions] = useState([]);
-  
-  // State to toggle the full search bar on mobile
   const [mobileSearchOpen, setMobileSearchOpen] = useState(false);
 
   // Fetch suggestion results
@@ -24,28 +22,23 @@ export default function Navbar() {
       setSuggestions([]);
       return;
     }
-
     const fetchResults = async () => {
       const snap = await getDocs(collection(db, "products"));
       const list = snap.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-
       const filtered = list.filter(item =>
         item.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
         item.category.toLowerCase().includes(searchQuery.toLowerCase())
       );
-
       setSuggestions(filtered.slice(0, 5));
     };
-
     fetchResults();
   }, [searchQuery]);
 
-  // Helper to handle clicking a search result
   const handleSearchNavigate = (id) => {
     navigate(`/product/${id}`);
     setSearchQuery("");
     setSuggestions([]);
-    setMobileSearchOpen(false); // Close mobile search on selection
+    setMobileSearchOpen(false);
   };
 
   return (
@@ -54,10 +47,9 @@ export default function Navbar() {
 
         {/* --- CONDITION: IS MOBILE SEARCH OPEN? --- */}
         {mobileSearchOpen ? (
-          /* 1. MOBILE SEARCH OVERLAY VIEW */
+          /* 1. MOBILE SEARCH ACTIVE VIEW */
           <div className="nav-mobile-search-active">
             <FiSearch size={20} className="search-icon-active" />
-            
             <input 
               autoFocus
               className="search-input mobile-input-style"
@@ -65,17 +57,14 @@ export default function Navbar() {
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
             />
-            
             <FiX 
               size={24} 
               className="nav-icon" 
               onClick={() => {
                 setMobileSearchOpen(false);
-                setSearchQuery(""); // Optional: clear search on close
+                setSearchQuery("");
               }} 
             />
-
-            {/* Mobile Suggestions Dropdown */}
             {suggestions.length > 0 && (
               <div className="search-dropdown mobile-dropdown-pos">
                 {suggestions.map((item) => (
@@ -90,29 +79,22 @@ export default function Navbar() {
         ) : (
           /* 2. STANDARD NAVBAR VIEW */
           <>
-            {/* LEFT: MENU ICON */}
+            {/* LEFT: MENU + SEARCH */}
             <div className="nav-left">
               <FiMenu 
                 size={24} 
                 className="nav-icon"
                 onClick={() => setSidebarOpen(true)} 
               />
-            </div>
 
-            {/* CENTER: LOGO */}
-            <h1 className="nav-logo" onClick={() => navigate("/")}>TAGTURN</h1>
-
-            {/* RIGHT: SEARCH ICON (Mobile) + SEARCH BAR (Desktop) + ICONS */}
-            <div className="nav-right">
-
-              {/* A. Mobile Search Trigger (Hidden on Desktop) */}
+              {/* Mobile Search Icon (Visible only on Mobile) */}
               <FiSearch 
                 size={22} 
                 className="nav-icon mobile-search-trigger" 
                 onClick={() => setMobileSearchOpen(true)}
               />
 
-              {/* B. Desktop Search Container (Hidden on Mobile) */}
+              {/* Desktop Search Bar (Visible only on Desktop) */}
               <div className="nav-search-container desktop-only">
                 <FiSearch size={18} className="search-icon" />
                 <input 
@@ -122,7 +104,6 @@ export default function Navbar() {
                   onChange={(e) => setSearchQuery(e.target.value)}
                 />
                 
-                {/* Desktop Suggestions */}
                 {suggestions.length > 0 && (
                   <div className="search-dropdown">
                     {suggestions.map((item) => (
@@ -134,8 +115,13 @@ export default function Navbar() {
                   </div>
                 )}
               </div>
+            </div>
 
-              {/* C. Icons Group: Wishlist, Cart, Profile */}
+            {/* CENTER: LOGO */}
+            <h1 className="nav-logo" onClick={() => navigate("/")}>TAGTURN</h1>
+
+            {/* RIGHT: ICONS ONLY */}
+            <div className="nav-right">
               <div className="nav-icons-group">
                 <FiHeart className="nav-icon hide-on-very-small" size={22} />
                 <FiShoppingCart 
@@ -143,8 +129,6 @@ export default function Navbar() {
                   className="nav-icon"
                   onClick={() => navigate("/cart")}
                 />
-
-                {/* Profile Logic */}
                 {user?.photoURL ? (
                   <img 
                     src={user.photoURL}
@@ -168,10 +152,7 @@ export default function Navbar() {
       {/* Sidebar */}
       {sidebarOpen && (
         <>
-          <div 
-            className="sidebar-overlay"
-            onClick={() => setSidebarOpen(false)}
-          ></div>
+          <div className="sidebar-overlay" onClick={() => setSidebarOpen(false)}></div>
           <Sidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
         </>
       )}
