@@ -1,7 +1,7 @@
 import "../styles/Sidebar.css";
 import { useNavigate } from "react-router-dom";
 import useAuthListener from "../hooks/useAuthListener";
-import { FiUser, FiLogOut, FiGrid, FiChevronDown, FiHome } from "react-icons/fi";
+import { FiUser, FiLogOut, FiGrid, FiChevronDown, FiHome, FiX } from "react-icons/fi";
 import { useState, useEffect } from "react";
 import { db } from "../firebase/firebaseConfig";
 import { collection, getDocs } from "firebase/firestore";
@@ -41,7 +41,11 @@ export default function Sidebar({ isOpen, onClose }) {
 
       <div className={`sidebar ${isOpen ? "open" : ""}`}>
         
-        <h2 className="sidebar-title">Browse</h2>
+        {/* HEADER: Title Center + Close Button Right */}
+        <div className="sidebar-header">
+          <h2 className="sidebar-title">T A G T U R N</h2>
+          <FiX size={24} className="sidebar-close-icon" onClick={onClose} />
+        </div>
 
         {/* HOME */}
         <div className="sidebar-item" onClick={() => { navigate("/"); onClose(); }}>
@@ -53,7 +57,9 @@ export default function Sidebar({ isOpen, onClose }) {
           className="sidebar-item dropdown-toggle"
           onClick={() => setShowCategoryDropdown(!showCategoryDropdown)}
         >
-          <FiGrid size={18} /> Explore By Category
+          <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+             <FiGrid size={18} /> Explore By Category
+          </div>
           <FiChevronDown size={14} className={showCategoryDropdown ? "rotate" : ""} />
         </div>
 

@@ -1,5 +1,7 @@
+/* Import font just in case */
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600&display=swap');
+
 .sidebar {
-  margin-top: 10px;
   position: fixed;
   top: 0;
   left: 0;
@@ -9,25 +11,53 @@
   padding: 28px;
   transform: translateX(-100%);
   transition: transform 0.3s ease-in-out;
-  z-index: 999;
+  z-index: 3000; 
   display: flex;
   flex-direction: column;
+  box-shadow: 2px 0 10px rgba(0,0,0,0.1);
 }
 
 .sidebar.open {
   transform: translateX(0);
 }
 
-/* title */
-.sidebar-title {
-  font-size: 22px;
-  font-weight: 600;
-  margin-bottom: 20px;
-  font-family: "Playfair Display", serif;
-  color: #111;
+/* --- HEADER SECTION --- */
+.sidebar-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between; /* Ensures proper spacing */
+  margin-bottom: 25px;
+  margin-top: 5px;
+  position: relative;
 }
 
-/* clickable items */
+.sidebar-title {
+  font-family: "Playfair Display", serif;
+  font-size: 24px;
+  font-weight: 600;
+  color: #111;
+  margin: 0;
+  
+  /* Center the text logic */
+  flex: 1; /* Takes up available space */
+  text-align: center;
+  padding-left: 24px; /* Offset to balance the X icon on the right so it looks perfectly centered */
+}
+
+/* Close "X" Icon */
+.sidebar-close-icon {
+  cursor: pointer;
+  color: #555;
+  transition: 0.2s;
+  flex-shrink: 0;
+}
+
+.sidebar-close-icon:hover {
+  color: #000;
+  transform: rotate(90deg); /* Nice interaction effect */
+}
+
+/* --- ITEMS --- */
 .sidebar-item {
   padding: 12px 0;
   cursor: pointer;
@@ -44,14 +74,12 @@
   transform: translateX(4px);
 }
 
-/* divider line */
 .sidebar-divider {
   border: none;
   border-bottom: 1px solid #e0e0e0;
   margin: 18px 0;
 }
 
-/* logout styling */
 .logout {
   color: #d23f3f;
   font-weight: 600;
@@ -61,16 +89,15 @@
   color: #ff1f1f;
 }
 
-/* overlay behind drawer */
 .sidebar-overlay {
   position: fixed;
   inset: 0;
   background: rgba(0,0,0,0.35);
-  z-index: 995;
+  z-index: 2999; 
   backdrop-filter: blur(2px);
 }
 
-/* mobile optimization */
+/* --- MOBILE --- */
 @media (max-width: 480px) {
   .sidebar {
     width: 230px;
@@ -82,7 +109,7 @@
   }
 }
 
-
+/* --- DROPDOWN --- */
 .dropdown-toggle {
   display: flex;
   justify-content: space-between;

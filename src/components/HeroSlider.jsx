@@ -1,6 +1,7 @@
 import Slider from "react-slick";
 import banner from "../assets/images/banner1.jpg";
 import banner2 from "../assets/images/banner2.jpg";
+import banner3 from "../assets/images/banner3.jpg";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import "../styles/HeroSlider.css";
@@ -25,6 +26,11 @@ export default function HeroSlider() {
       {/* Slide 2 (same image as requested) */}
       <div className="hero-slide">
         <img src={banner2} alt="banner-2" className="hero-image" />
+      </div>
+
+      {/* Slide 3 (same image as requested) */}
+      <div className="hero-slide">
+        <img src={banner3} alt="banner-3" className="hero-image" />
       </div>
     </Slider>
   );
