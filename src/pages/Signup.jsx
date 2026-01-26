@@ -1,78 +1,80 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { registerUser, googleLogin } from "../services/authService";
 import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
+import useAuthListener from "../hooks/useAuthListener";
 import "../styles/Auth.css";
 
 export default function Signup() {
   const navigate = useNavigate();
+  const { user, loading: authLoading } = useAuthListener();
 
+  const [loading, setLoading] = useState(false);
   const [form, setForm] = useState({
     name: "",
     email: "",
     password: ""
   });
 
-  const handleChange = (e) => {
-    setForm({...form, [e.target.name]: e.target.value});
-  };
+  useEffect(() => {
+    if (!authLoading && user) navigate("/");
+  }, [user, authLoading, navigate]);
+
+  const handleChange = (e) =>
+    setForm({ ...form, [e.target.name]: e.target.value });
 
   const handleSignup = async () => {
+    const { name, email, password } = form;
+
+    if (!name || !email || !password)
+      return toast.error("Please fill all fields");
+
+    if (password.length < 6)
+      return toast.error("Password must be at least 6 characters");
+
+    setLoading(true);
     try {
-      await registerUser(form.email, form.password, form.name);
+      await registerUser(email, password, name);
+      toast.success("Account created!");
       navigate("/");
-    } catch (error) {
-      alert(error.message);
+    } catch (err) {
+      toast.error(err.message || "Signup failed");
+    } finally {
+      setLoading(false);
     }
   };
 
   const handleGoogle = async () => {
     try {
       await googleLogin();
-      navigate("/");
-    } catch (error) {
-      alert(error.message);
+    } catch {
+      toast.error("Google signup failed");
     }
   };
 
+  if (authLoading) return null;
+
   return (
     <div className="auth-container">
-      <h2>Create Account</h2>
+      <div className="auth-card">
+        <h2>Create Account</h2>
 
-      <input
-        className="auth-input"
-        placeholder="Full Name"
-        name="name"
-        onChange={handleChange}
-      />
+        <input name="name" placeholder="Full Name" onChange={handleChange} />
+        <input name="email" placeholder="Email" onChange={handleChange} />
+        <input
+          name="password"
+          type="password"
+          placeholder="Password"
+          onChange={handleChange}
+        />
 
-      <input
-        className="auth-input"
-        placeholder="Email Address"
-        name="email"
-        onChange={handleChange}
-      />
+        <button onClick={handleSignup} disabled={loading}>
+          {loading ? "Creating..." : "Sign Up"}
+        </button>
 
-      <input
-        className="auth-input"
-        type="password"
-        placeholder="Password"
-        name="password"
-        onChange={handleChange}
-      />
-
-      <button className="auth-btn" onClick={handleSignup}>
-        Sign Up
-      </button>
-
-      <button className="google-btn" onClick={handleGoogle}>
-        <img src="https://www.svgrepo.com/show/355037/google.svg" alt="google" />
-        Continue with Google
-      </button>
-
-      <p className="switch-text">
-        Already have an account?{" "}
-        <span onClick={() => navigate("/login")}>Login</span>
-      </p>
+        <div className="divider-text">OR</div>
+        <button onClick={handleGoogle}>Continue with Google</button>
+      </div>
     </div>
   );
 }

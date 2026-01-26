@@ -1,23 +1,55 @@
-import { auth } from "../firebase/firebaseConfig";
-import { onAuthStateChanged } from "firebase/auth";
 import { useEffect, useState } from "react";
+import { supabase } from "../supabase/supabaseClient";
 import { getUserRole } from "../services/authService";
 
 export default function useAuthListener() {
-  const [userData, setUserData] = useState(null);
+  const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, async (user) => {
-      if (!user) return setUserData(null);
+    // Initial session
+    supabase.auth.getUser().then(async ({ data }) => {
+      const authUser = data?.user;
 
-      const role = await getUserRole(user.uid);
+      if (!authUser) {
+        setUser(null);
+        setLoading(false);
+        return;
+      }
 
-      setUserData({ uid: user.uid, email: user.email, role });
+      const role = await getUserRole(authUser.id);
+
+      setUser({
+        id: authUser.id,
+        email: authUser.email,
+        role
+      });
+
+      setLoading(false);
     });
 
-    return () => unsubscribe();
+    // Listen to auth changes
+    const { data: listener } = supabase.auth.onAuthStateChange(
+      async (_event, session) => {
+        const authUser = session?.user;
+
+        if (!authUser) {
+          setUser(null);
+          return;
+        }
+
+        const role = await getUserRole(authUser.id);
+
+        setUser({
+          id: authUser.id,
+          email: authUser.email,
+          role
+        });
+      }
+    );
+
+    return () => listener.subscription.unsubscribe();
   }, []);
 
-  return userData;
+  return { user, loading };
 }
-    

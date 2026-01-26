@@ -1,9 +1,8 @@
 import { useEffect, useState } from "react";
-import { toast } from "react-toastify";
+import { supabase } from "../supabase/supabaseClient"; // Updated to Supabase
 import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 import useAuthListener from "../hooks/useAuthListener";
-import { db, auth } from "../firebase/firebaseConfig";
-import { collection, onSnapshot, doc, updateDoc, deleteDoc } from "firebase/firestore";
 import "../styles/Cart.css";
 
 export default function Cart() {
@@ -13,53 +12,89 @@ export default function Cart() {
   const [cartItems, setCartItems] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  // Listen to cart items LIVE
+  /* ---------------- FETCH CART ITEMS ---------------- */
+  /* ---------------- FETCH CART ITEMS ---------------- */
+const fetchCart = async () => {
+  const userId = user?.id || user?.uid;
+  if (!userId) return;
+
+  // DEBUG: Uncomment this to see exactly what ID is being queried
+  // console.log("Fetching cart for ID:", userId);
+
+  try {
+    const { data, error } = await supabase
+      .from("cart")
+      .select("*")
+      .eq("user_id", userId) // This will now match the TEXT column perfectly
+      .order("created_at", { ascending: false });
+
+    if (error) throw error;
+    setCartItems(data || []);
+  } catch (err) {
+    console.error("Error fetching cart:", err.message);
+    toast.error("Failed to load cart");
+  } finally {
+    setLoading(false);
+  }
+};
+
   useEffect(() => {
-    const unsubscribeAuth = auth.onAuthStateChanged((firebaseUser) => {
-      if (!firebaseUser) {
-        toast.info("Please login to view cart");
-        navigate("/login");
-      } else {
-        const cartRef = collection(db, "users", firebaseUser.uid, "cart");
+    if (user) {
+      fetchCart();
+    } else {
+      // Small delay to check if user is truly logged out
+      const timer = setTimeout(() => {
+        if (!user) {
+          toast.info("Please login to view cart");
+          navigate("/login");
+        }
+      }, 1000);
+      return () => clearTimeout(timer);
+    }
+  }, [user, navigate]);
 
-        const unsubscribeCart = onSnapshot(cartRef, (snapshot) => {
-          const items = snapshot.docs.map((doc) => ({
-            id: doc.id,
-            ...doc.data(),
-          }));
-
-          setCartItems(items);
-          setLoading(false);
-        });
-
-        return () => unsubscribeCart();
-      }
-    });
-
-    return () => unsubscribeAuth();
-  }, [navigate]);
-
-  // Update Quantity
+  /* ---------------- UPDATE QUANTITY ---------------- */
   const updateQuantity = async (item, change) => {
     const newQty = item.quantity + change;
     if (newQty < 1) return toast.warning("Minimum quantity is 1");
 
-    await updateDoc(doc(db, "users", user.uid, "cart", item.id), {
-      quantity: newQty,
-    });
+    try {
+      const { error } = await supabase
+        .from("cart")
+        .update({ quantity: newQty })
+        .eq("id", item.id);
+
+      if (error) throw error;
+      
+      // Update local state for instant UI feedback
+      setCartItems(prev => 
+        prev.map(i => i.id === item.id ? { ...i, quantity: newQty } : i)
+      );
+    } catch (err) {
+      toast.error("Update failed");
+    }
   };
 
-  // Remove item
+  /* ---------------- REMOVE ITEM ---------------- */
   const removeItem = async (itemId) => {
-    await deleteDoc(doc(db, "users", user.uid, "cart", itemId));
-    toast.success("Item removed");
+    try {
+      const { error } = await supabase
+        .from("cart")
+        .delete()
+        .eq("id", itemId);
+
+      if (error) throw error;
+
+      toast.success("Item removed");
+      setCartItems(prev => prev.filter(i => i.id !== itemId));
+    } catch (err) {
+      toast.error("Remove failed");
+    }
   };
 
-  // Total Price
+  /* ---------------- CALCULATE TOTAL ---------------- */
   const totalPrice = cartItems.reduce((sum, item) => sum + item.price * item.quantity, 0);
 
-
-  // UI Loading / Empty states
   if (loading) return <p className="cart-loading">Loading your cart...</p>;
 
   if (cartItems.length === 0)
@@ -72,13 +107,11 @@ export default function Cart() {
       </div>
     );
 
-
   return (
     <div className="cart-page">
       <h1 className="cart-title">🛒 Your Cart</h1>
 
       <div className="cart-content">
-
         {/* CART ITEMS LIST */}
         <div className="cart-items">
           {cartItems.map((item) => (
@@ -88,7 +121,6 @@ export default function Cart() {
               <div className="cart-info">
                 <h3>{item.name}</h3>
                 {item.size && <p>Size: <b>{item.size}</b></p>}
-
                 <p className="price">₹ {item.price}</p>
 
                 <div className="qty-buttons">
@@ -108,17 +140,14 @@ export default function Cart() {
         {/* SUMMARY BOX */}
         <div className="cart-summary">
           <h2>Order Summary</h2>
-
           <div className="summary-row">
             <span>Items:</span>
             <b>{cartItems.length}</b>
           </div>
-
           <div className="summary-row">
             <span>Total Amount:</span>
             <b>₹ {totalPrice.toLocaleString()}</b>
           </div>
-
           <button className="checkout-btn" onClick={() => navigate("/checkout")}>
             Proceed to Checkout →
           </button>

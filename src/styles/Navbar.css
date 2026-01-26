@@ -1,196 +1,160 @@
-/* --- LAYOUT --- */
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@700;800&display=swap');
+
+/* ========================= */
+/* GLOBAL FIX (IMPORTANT) */
+/* ========================= */
+body {
+  margin: 0;
+  padding: 0;
+}
+
+/* ========================= */
+/* NAVBAR */
+/* ========================= */
 .navbar {
-  width: 100%;
-  padding: 15px 30px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  border-bottom: 1px solid #eee;
   position: sticky;
-  top: 0;
-  background: white;
+  top: 0;                 /* 👈 sticks exactly to top */
   z-index: 1000;
-  height: 70px;
-  box-sizing: border-box;
-  /* height: 70px; */
-}
 
-/* Logo - ABSOLUTE CENTERED */
-.nav-logo {
-  font-family: "Playfair Display", serif;
-  font-size: 28px;
-  letter-spacing: 2px;
-  font-weight: 500;
-  cursor: pointer;
-  text-align: center;
-  white-space: nowrap;
-  
-  /* Critical for centering when left/right sides are unequal widths */
-  position: absolute;
-  left: 50%;
-  transform: translateX(-50%);
-}
-
-/* Left section - Now Flex to hold Menu + Search */
-.nav-left {
   display: flex;
   align-items: center;
-  gap: 20px; /* Space between Menu and Search */
+  justify-content: space-between;
+
+  height: 80px;
+  padding: 0 40px;
+
+  background-color: #ffffff9f;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
 }
 
-/* Right section wrapper */
+/* ========================= */
+/* LEFT SECTION (LOGO) */
+/* ========================= */
+.nav-left {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+
+  font-family: 'Montserrat', sans-serif;
+  font-size: 24px;
+  font-weight: 800;
+  letter-spacing: -1px;
+  text-transform: uppercase;
+  color: #1a1a1a;
+}
+
+.nav-logo-img {
+  height: 70px;          /* 👈 BIG & VISIBLE */
+  width: auto;
+  object-fit: contain;
+}
+
+/* ========================= */
+/* CENTER SECTION */
+/* ========================= */
+.nav-center {
+  flex: 2;
+  display: flex;
+  justify-content: center;
+  gap: 40px;
+}
+
+.nav-link {
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 1px;
+  cursor: pointer;
+  color: #333;
+  transition: color 0.25s ease;
+}
+
+.nav-link:hover {
+  color: #ff4757;
+}
+
+/* ========================= */
+/* RIGHT SECTION */
+/* ========================= */
 .nav-right {
+  flex: 1;
   display: flex;
   align-items: center;
   justify-content: flex-end;
+  gap: 20px;
 }
 
-/* Wrapper for Heart/Cart/User */
-.nav-icons-group {
-  display: flex;
-  align-items: center;
-  gap: 16px;
-}
-
-/* --- SEARCH (DESKTOP) --- */
-.nav-search-container {
-  display: flex;
-  align-items: center;
-  background: #f5f5f5;
-  padding: 8px 12px;
-  border-radius: 30px;
-  width: 240px;
-  border: 1px solid #ddd;
-  position: relative;
-}
-
-.search-input {
-  border: none;
-  background: none;
-  width: 100%;
-  outline: none;
-  font-size: 14px;
-  margin-left: 5px;
-}
-
-/* Default: Hide mobile trigger on desktop */
-.mobile-search-trigger {
-  display: none;
-}
-
-/* --- MOBILE SEARCH MODE (ACTIVE) --- */
-.nav-mobile-search-active {
-  display: flex;
-  align-items: center;
-  width: 100%;
-  gap: 12px;
-  animation: fadeIn 0.2s ease-in-out;
-  
-  /* Ensure this sits on top if logo is absolute */
-  position: relative; 
-  z-index: 10;
-  background: white;
-}
-
-.mobile-input-style {
-  background: #f5f5f5;
-  padding: 10px;
-  border-radius: 6px;
-  font-size: 16px;
-}
-
-.search-icon-active {
-  color: #888;
-}
-
-/* --- DROPDOWN SUGGESTIONS --- */
-.search-dropdown {
-  position: absolute;
-  top: 115%;
-  left: 0;
-  width: 100%;
-  background: white;
-  border-radius: 6px;
-  box-shadow: 0 5px 20px rgba(0,0,0,0.08);
-  overflow: hidden;
-  z-index: 2000;
-  border: 1px solid #eee;
-}
-
-.mobile-dropdown-pos {
-  top: 65px; 
-  left: 15px; 
-  width: calc(100% - 30px);
-}
-
-.search-item {
-  padding: 10px;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  cursor: pointer;
-  border-bottom: 1px solid #f9f9f9;
-}
-.search-item:hover {
-  background: #f1f1f1;
-}
-
-.search-thumb {
-  width: 35px;
-  height: 35px;
-  border-radius: 6px;
-  object-fit: cover;
-}
-
-/* --- ICONS --- */
 .nav-icon {
   cursor: pointer;
-  transition: 0.2s ease;
-  flex-shrink: 0;
+  transition: transform 0.2s ease;
 }
+
 .nav-icon:hover {
-  transform: scale(1.15);
+  transform: translateY(-2px);
 }
 
 .profile-img {
-  width: 28px;
-  height: 28px;
+  width: 35px;
+  height: 35px;
   border-radius: 50%;
-  cursor: pointer;
   object-fit: cover;
-  flex-shrink: 0;
+  cursor: pointer;
+  border: 1px solid #eee;
 }
 
-/* --- RESPONSIVE MEDIA QUERIES --- */
-@media (max-width: 768px) {
+/* ========================= */
+/* MOBILE MENU ICON */
+/* ========================= */
+.menu-toggle {
+  display: none;
+  cursor: pointer;
+}
+
+/* ========================= */
+/* RESPONSIVE */
+/* ========================= */
+@media (max-width: 900px) {
   .navbar {
-    padding: 10px 15px;
+    padding: 0 20px;
   }
 
-  /* Hide Desktop Search Bar */
-  .desktop-only {
-    display: none !important;
-  }
-
-  /* Show Mobile Search Icon */
-  .mobile-search-trigger {
+  .menu-toggle {
     display: block;
+    margin-left: 10px;
   }
 
-  .nav-right {
-    gap: 12px;
-  }
-  
-  .nav-logo {
-    font-size: 22px;
-  }
-  
-  .hide-on-very-small {
+  .hide-mobile {
     display: none;
   }
+
+  /* Dropdown Menu */
+  .nav-center {
+    position: absolute;
+    top: 80px;
+    left: 0;
+    width: 100%;
+
+    display: none;
+    flex-direction: column;
+    gap: 20px;
+    padding: 20px 0;
+
+    background-color: #ffffff;
+    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
+  }
+
+  .nav-center.nav-active {
+    display: flex;
+  }
 }
 
-@keyframes fadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
+@media (max-width: 480px) {
+  .nav-logo-img {
+    height: 60px;
+  }
+
+  .profile-img {
+    width: 32px;
+    height: 32px;
+  }
 }

@@ -1,16 +1,26 @@
 import Navbar from "../components/Navbar";
 import HeroSlider from "../components/HeroSlider";
-import FeaturedProducts from "../components/FeaturedProducts";
-import Footer from "../components/Footer";
 import ExploreCategories from "../components/ExploreCategories";
+import Footer from "../components/Footer";
 
 export default function HomePage() {
   return (
-    <>
-      {/* <Navbar /> */}
-      <HeroSlider />
-      <ExploreCategories />
+    <div className="main-layout">
+      {/* Navbar is fixed, so it sits on top of everything */}
+      <Navbar /> 
+      
+      <main>
+        <HeroSlider />
+        
+        {/* Added a Wrapper for section spacing */}
+        <section className="content-wrapper">
+           <ExploreCategories />
+        </section>
+        
+        {/* You can add FeaturedProducts here later */}
+      </main>
+
       <Footer />
-    </>
+    </div>
   );
 }

@@ -1,81 +1,68 @@
-import { BrowserRouter as Router, Routes, Route, Navigate, useLocation } from "react-router-dom";
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  Navigate,
+  useLocation
+} from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 import { useEffect } from "react";
 import "react-toastify/dist/ReactToastify.css";
 
-// Components
-import Navbar from "./components/Navbar";
-
-// Pages
+// Page Imports
 import HomePage from "./pages/HomePage";
-import ProductDetails from "./pages/ProductDetails";
-import CategoryProducts from "./pages/CategoryProducts";
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
 import Profile from "./pages/Profile";
 import Cart from "./pages/Cart";
+import AuthCallback from "./pages/AuthCallback";
 
-// Auth hook
+// Category & Product Pages
+import CategoryProducts from "./pages/CategoryProducts"; 
+import ProductDetails from "./pages/ProductDetails"; // Now active
+
 import useAuthListener from "./hooks/useAuthListener";
 
-
-// -------- Protected Route (Only logged-in users can enter) --------
+/**
+ * Ensures only logged-in users can access specific pages.
+ */
 function ProtectedRoute({ children }) {
-  const user = useAuthListener();
-
-  // Firebase still checking auth status
-  if (user === null) {
-    return <p style={{ textAlign: "center", marginTop: 50 }}>Checking authentication...</p>;
-  }
-
-  // No user means not logged in → redirect to login
-  if (!user) {
-    return <Navigate to="/login" replace />;
-  }
-
+  const { user, loading } = useAuthListener();
+  if (loading) return <p className="loading-state">Checking authentication...</p>;
+  if (!user) return <Navigate to="/login" replace />;
   return children;
 }
 
-
-// -------- Redirect Logged-in Users away from Login/Signup --------
-function AuthRedirect({ children }) {
-  const user = useAuthListener();
-
-  // If logged in → redirect to home
-  if (user) return <Navigate to="/" replace />;
-
-  return children;
-}
-
-
-// -------- Scroll To Top on page change --------
+/**
+ * Forces the window to scroll to top whenever the URL path changes.
+ */
 function ScrollToTop() {
   const { pathname } = useLocation();
   useEffect(() => window.scrollTo(0, 0), [pathname]);
   return null;
 }
 
-
-// -------- APP COMPONENT --------
 export default function App() {
   return (
     <>
       <Router>
         <ScrollToTop />
-        <Navbar />
 
         <Routes>
-
-          {/* -------- Public Routes -------- */}
+          {/* --- PUBLIC ROUTES --- */}
           <Route path="/" element={<HomePage />} />
-          <Route path="/product/:id" element={<ProductDetails />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/signup" element={<Signup />} />
+          <Route path="/auth/callback" element={<AuthCallback />} />
+
+          {/* --- SHOPPING FLOW --- */}
+          {/* Shows products by category: e.g., /category/Men */}
           <Route path="/category/:categoryName" element={<CategoryProducts />} />
+          
+          {/* Shows specific product details: e.g., /product/1 */}
+          <Route path="/product/:id" element={<ProductDetails />} />
 
-          {/* -------- Auth Routes (Blocked if logged-in) -------- */}
-          <Route path="/login" element={<AuthRedirect><Login /></AuthRedirect>} />
-          <Route path="/signup" element={<AuthRedirect><Signup /></AuthRedirect>} />
-
-          {/* -------- Protected Routes -------- */}
+          {/* --- PROTECTED ROUTES --- */}
           <Route
             path="/profile"
             element={
@@ -94,11 +81,25 @@ export default function App() {
             }
           />
 
+          {/* --- CATCH-ALL ROUTE --- */}
+          {/* Redirects any unknown URL back to Home */}
+          <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </Router>
 
-      {/* Toast Notification */}
-      <ToastContainer position="top-center" autoClose={1800} />
+      {/* Global Notification System */}
+      <ToastContainer 
+        position="bottom-right" // Changed to bottom-right for better UX on mobile
+        autoClose={2000} 
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="dark"
+      />
     </>
   );
 }

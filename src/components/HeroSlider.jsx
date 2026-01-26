@@ -1,37 +1,58 @@
+import React from 'react';
 import Slider from "react-slick";
-import banner from "../assets/images/banner1.jpg";
-import banner2 from "../assets/images/banner2.jpg";
-import banner3 from "../assets/images/banner3.jpg";
+
+// Styles
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import "../styles/HeroSlider.css";
 
+// Static Assets
+const banner1 = "https://images.unsplash.com/photo-1490481658327-4772827d0779?q=80&w=2070&auto=format&fit=crop";
+const banner2 = "https://images.unsplash.com/photo-1483985988355-763728e1935b?q=80&w=2070&auto=format&fit=crop";
+
 export default function HeroSlider() {
-  const settings = {
+  const sliderSettings = {
     dots: true,
     infinite: true,
     autoplay: true,
+    autoplaySpeed: 5000,
+    fade: true, 
+    speed: 1500,
     arrows: false,
-    speed: 700,
-    autoplaySpeed: 3000,
+    pauseOnHover: false,
   };
 
+  const slides = [
+    {
+      img: banner1,
+      subtitle: "New Collection 2026",
+      title: "NO BAD ANGLES.",
+      cta: "Shop the Look"
+    },
+    {
+      img: banner2,
+      subtitle: "Urban Essentials",
+      title: "STREET ELEGANCE.",
+      cta: "Explore Now"
+    }
+  ];
+
   return (
-    <Slider {...settings} className="hero-wrapper">
-      {/* Slide 1 */}
-      <div className="hero-slide">
-        <img src={banner} alt="banner" className="hero-image" />
-      </div>
-
-      {/* Slide 2 (same image as requested) */}
-      <div className="hero-slide">
-        <img src={banner2} alt="banner-2" className="hero-image" />
-      </div>
-
-      {/* Slide 3 (same image as requested) */}
-      <div className="hero-slide">
-        <img src={banner3} alt="banner-3" className="hero-image" />
-      </div>
-    </Slider>
+    <section className="hero-section">
+      <Slider {...sliderSettings} className="hero-wrapper">
+        {slides.map((slide, index) => (
+          <div key={index} className="hero-slide">
+            <div className="hero-overlay">
+              <div className="hero-content">
+                <span className="hero-subtitle">{slide.subtitle}</span>
+                <h2 className="hero-title">{slide.title}</h2>
+                <button className="hero-btn">{slide.cta}</button>
+              </div>
+            </div>
+            <img src={slide.img} alt="TAGTURN" className="hero-img" />
+          </div>
+        ))}
+      </Slider>
+    </section>
   );
 }
