@@ -1,161 +1,87 @@
-import { Facebook, Instagram, Youtube, Twitter, Smartphone, Package, RefreshCw } from "lucide-react";
+import { Facebook, Instagram, Youtube, Twitter, Package, RefreshCw, ArrowRight } from "lucide-react";
 import "../styles/Footer.css";
 
 export default function Footer() {
-  const shopFor = [
-    "Starwars Shirt",
-    "Disney Shirt",
-    "Captain America Shirt",
-    "Harry Potter Shirt",
-    "Deadpool Shirt",
-    "DC Shirt"
-  ];
-
-  const needHelp = [
-    "Contact Us",
-    "Track Order",
-    "Returns & Refunds",
-    "FAQs",
-    "My Account"
-  ];
-
-  const company = [
-    "About Us",
-    "Investor Relations",
-    "Careers",
-    "Gift Vouchers",
-    "Community Initiatives"
-  ];
-
-  const moreInfo = [
-    "T&C",
-    "Privacy Policy",
-    "Sitemap",
-    "Get Notified",
-    "Blogs"
-  ];
-
-  const stores = [
-    "Mumbai",
-    "Pune",
-    "Bangalore",
-    "Hubbali"
+  const sections = [
+    { title: "Shop", items: ["Starwars", "Disney", "Marvel", "Harry Potter", "Deadpool", "DC Comics"] },
+    { title: "Help", items: ["Contact Us", "Track Order", "Returns", "FAQs", "My Account"] },
+    { title: "Company", items: ["About Us", "Investors", "Careers", "Gift Vouchers", "Community"] },
+    { title: "Legal", items: ["T&C", "Privacy Policy", "Sitemap", "Get Notified", "Blogs"] }
   ];
 
   return (
     <footer className="footer">
       <div className="footer-container">
-        {/* Main Footer Grid */}
-        <div className="footer-grid">
-          {/* Shop For */}
-          <div className="footer-column">
-            <h3 className="footer-title">Shop For</h3>
-            <div className="footer-links">
-              {shopFor.map((item, idx) => (
-                <a key={idx} href="#" className="footer-link">{item}</a>
-              ))}
-            </div>
+        
+        {/* Top: Brand & Newsletter */}
+        <div className="footer-top">
+          <div className="brand-side">
+            <h2 className="footer-logo">TAGTURN</h2>
+            <p className="brand-tagline">Redefining urban elegance through premium streetwear.</p>
           </div>
-
-          {/* Need Help */}
-          <div className="footer-column">
-            <h3 className="footer-title">Need Help</h3>
-            <div className="footer-links">
-              {needHelp.map((item, idx) => (
-                <a key={idx} href="#" className="footer-link">{item}</a>
-              ))}
-            </div>
-          </div>
-
-          {/* Company */}
-          <div className="footer-column">
-            <h3 className="footer-title">Company</h3>
-            <div className="footer-links">
-              {company.map((item, idx) => (
-                <a key={idx} href="#" className="footer-link">{item}</a>
-              ))}
-            </div>
-          </div>
-
-          {/* More Info */}
-          <div className="footer-column">
-            <h3 className="footer-title">More Info</h3>
-            <div className="footer-links">
-              {moreInfo.map((item, idx) => (
-                <a key={idx} href="#" className="footer-link">{item}</a>
-              ))}
+          <div className="newsletter-side">
+            <p className="newsletter-label">Stay in the loop</p>
+            <div className="subscribe-box">
+              <input type="email" placeholder="Enter your email" />
+              <button><ArrowRight size={18} /></button>
             </div>
           </div>
         </div>
 
-        {/* Store Near Me */}
-        <div className="footer-grid" style={{ marginTop: '32px' }}>
-          <div className="footer-column">
-            <h3 className="footer-title">Store Near Me</h3>
-            <div className="footer-links">
-              {stores.map((store, idx) => (
-                <a key={idx} href="#" className="footer-link">{store}</a>
-              ))}
-              <a href="#" className="footer-link view-more">View More</a>
+        {/* Middle: Links Grid */}
+        <div className="footer-main-grid">
+          {sections.map((sec, idx) => (
+            <div key={idx} className="footer-col">
+              <h4 className="col-title">{sec.title}</h4>
+              <ul className="col-links">
+                {sec.items.map((item, i) => (
+                  <li key={i}><a href="#">{item}</a></li>
+                ))}
+              </ul>
             </div>
+          ))}
+          
+          <div className="footer-col stores">
+            <h4 className="col-title">Store Locator</h4>
+            <ul className="col-links">
+              <li>Mumbai</li>
+              <li>Pune</li>
+              <li>Bangalore</li>
+              <li className="view-more-link">View All Stores →</li>
+            </ul>
           </div>
         </div>
 
-        {/* Features */}
-        <div className="footer-features">
-          <div className="feature-item">
-            <div className="feature-icon">
-              <Package size={20} />
-            </div>
-            <span>COD Available</span>
+        {/* Features Bar */}
+        <div className="footer-features-bar">
+          <div className="feat-item">
+            <Package size={18} className="feat-icon" />
+            <span>COD AVAILABLE</span>
           </div>
-          <div className="feature-item">
-            <div className="feature-icon">
-              <RefreshCw size={20} />
-            </div>
-            <span>30 Days Easy Returns & Exchanges</span>
+          <div className="feat-item">
+            <RefreshCw size={18} className="feat-icon" />
+            <span>30 DAYS RETURNS</span>
           </div>
         </div>
 
-        {/* App Download */}
-        <div className="app-section">
-          <p className="app-title">📱 Experience The TagTurn App</p>
-          <div className="app-badges">
-            <img 
-              src="https://upload.wikimedia.org/wikipedia/commons/7/78/Google_Play_Store_badge_EN.svg" 
-              alt="Get it on Google Play" 
-              className="app-badge"
-            />
-            <img 
-              src="https://upload.wikimedia.org/wikipedia/commons/3/3c/Download_on_the_App_Store_Badge.svg" 
-              alt="Download on App Store" 
-              className="app-badge"
-            />
+        {/* Bottom: Apps & Socials */}
+        <div className="footer-bottom">
+          <div className="apps">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/7/78/Google_Play_Store_badge_EN.svg" alt="Play Store" />
+            <img src="https://upload.wikimedia.org/wikipedia/commons/3/3c/Download_on_the_App_Store_Badge.svg" alt="App Store" />
+          </div>
+
+          <div className="socials">
+            <a href="#"><Facebook size={18} /></a>
+            <a href="https://www.instagram.com/tagturn.in"><Instagram size={18} /></a>
+            <a href="#"><Youtube size={18} /></a>
+            <a href="#"><Twitter size={18} /></a>
           </div>
         </div>
 
-        {/* Social Media */}
-        <div className="social-section">
-          <p className="social-label">Follow Us:</p>
-          <div className="social-icons">
-            <a href="#" className="social-icon facebook">
-              <Facebook size={20} />
-            </a>
-            <a href="https://www.instagram.com/tagturn.in?igsh=OG5hZHJ4bG95dG1u" className="social-icon instagram">
-              <Instagram size={20} />
-            </a>
-            <a href="#" className="social-icon youtube">
-              <Youtube size={20} />
-            </a>
-            <a href="#" className="social-icon twitter">
-              <Twitter size={20} />
-            </a>
-          </div>
-        </div>
-
-        {/* Copyright */}
-        <div className="footer-copyright">
-          © {new Date().getFullYear()} <strong>TAGTURN</strong> — All Rights Reserved
+        <div className="copyright-bar">
+          <span>© {new Date().getFullYear()} TAGTURN.IN</span>
+          <span>CRAFTED IN INDIA</span>
         </div>
       </div>
     </footer>

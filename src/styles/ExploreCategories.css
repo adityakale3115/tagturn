@@ -1,247 +1,244 @@
-/* ExploreCategories.css */
-
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&family=Playfair+Display:ital,wght@0,400;0,500;1,400&display=swap');
+/* ================================================= */
+/* EXPLORE CATEGORIES - FULL COLOR OVERLAP THEME     */
+/* ================================================= */
 
 .explore-section {
-  padding: 100px 5%;
-  background-color: #ffffff;
-  min-height: 80vh;
+  padding: 80px 8%;
+  background-color: var(--bg-dark); /* #050505 */
+  min-height: 90vh;
+}
+
+.explore-header {
+  margin-bottom: 60px;
+  padding-left: 240px; /* Aligns with grid on desktop */
+}
+
+.section-tag {
+  color: var(--accent); /* Neon Red */
+  font-family: 'Inter', monospace;
+  font-size: 11px;
+  letter-spacing: 5px;
+  display: block;
+  margin-bottom: 10px;
+}
+
+.section-title {
+  font-size: clamp(2rem, 5vw, 3rem);
+  font-weight: 900;
+  text-transform: uppercase;
 }
 
 .explore-container {
-  max-width: 1400px;
-  margin: 0 auto;
-  display: grid;
-  grid-template-columns: 240px 1fr;
+  display: flex;
   gap: 60px;
+  max-width: 1500px;
+  margin: 0 auto;
 }
 
 /* --- SIDEBAR --- */
 .explore-sidebar {
+  flex: 0 0 180px;
   position: sticky;
   top: 120px;
   height: fit-content;
 }
 
-.explore-sidebar-title {
-  font-family: 'Playfair Display', serif;
-  font-size: 2.8rem;
-  margin-bottom: 40px;
-  color: #1a1a1a;
-  font-weight: 500;
-  line-height: 1.1;
-}
-
 .explore-list {
   list-style: none;
   padding: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
 }
 
 .explore-list-item {
-  font-size: 0.95rem;
-  padding: 15px 0;
+  margin-bottom: 40px;
   cursor: pointer;
-  color: #a0a0a0;
-  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-  font-family: 'Inter', sans-serif;
-  letter-spacing: 1.5px;
-  text-transform: uppercase;
-  position: relative;
-  width: fit-content;
 }
 
-/* Animated Underline Effect */
-.explore-list-item::after {
-  content: '';
-  position: absolute;
-  bottom: 10px;
-  left: 0;
+.tab-text {
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--text-secondary);
+  transition: 0.4s;
+}
+
+.tab-line {
+  display: block;
   width: 0;
   height: 1px;
-  background-color: #000;
-  transition: width 0.4s ease;
+  background: var(--accent);
+  transition: 0.4s cubic-bezier(0.2, 1, 0.3, 1);
+  margin-top: 8px;
 }
 
-.explore-list-item.active {
-  color: #000;
-  font-weight: 600;
-  letter-spacing: 2px;
-}
+.active .tab-text { color: var(--text-primary); }
+.active .tab-line { width: 40px; }
 
-.explore-list-item.active::after {
-  width: 100%;
-}
-
-.explore-list-item:hover {
-  color: #000;
-  padding-left: 10px; /* Subtle slide effect on hover */
-}
-
-/* --- PRODUCT GRID --- */
-.explore-grid {
+/* --- GRID --- */
+.explore-modern-grid {
+  flex: 1;
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-  gap: 30px;
-  row-gap: 50px;
+  grid-template-columns: repeat(3, 1fr); 
+  gap: 20px;
 }
 
-.explore-card {
-  cursor: pointer;
-  text-decoration: none;
-  color: inherit;
-}
-
-.explore-image-wrapper {
+.modern-card {
   position: relative;
-  aspect-ratio: 4 / 5;
+  aspect-ratio: 4/5;
+  cursor: pointer;
   overflow: hidden;
-  background: #fdfdfd;
-  /* Soft shadow for depth */
-  box-shadow: 0 10px 30px rgba(0,0,0,0.02);
+  border: 1px solid var(--border);
 }
 
-.explore-image {
+.card-img {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  transition: transform 1.2s cubic-bezier(0.15, 0, 0.05, 1);
+  transition: 1s cubic-bezier(0.2, 1, 0.3, 1);
+  filter: brightness(0.9); 
 }
 
-.explore-card:hover .explore-image {
+.modern-card:hover .card-img {
   transform: scale(1.1);
+  filter: brightness(1.1);
 }
 
-/* Luxury Overlay */
-.explore-overlay {
+/* --- OVERLAY --- */
+.card-overlay {
   position: absolute;
   inset: 0;
-  background: rgba(0, 0, 0, 0.15);
+  background: linear-gradient(to top, rgba(0,0,0,0.8) 0%, transparent 50%);
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding: 30px;
+  transition: background 0.4s ease;
+}
+
+.item-qty {
+  font-size: 9px;
+  color: var(--accent);
+  letter-spacing: 3px;
+  font-weight: 800;
+  display: block;
+  margin-bottom: 8px;
+  transform: translateY(15px);
+  opacity: 0;
+  transition: 0.4s ease;
+}
+
+.item-name {
+  font-size: 1.2rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  color: #fff;
+}
+
+.card-go {
+  position: absolute;
+  top: 25px;
+  right: 25px;
+  opacity: 0;
+  transform: scale(0.5);
+  transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.go-circle {
+  width: 40px;
+  height: 40px;
+  background: var(--accent);
+  border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
+  color: #fff;
+}
+
+.modern-card:hover .item-qty { opacity: 1; transform: translateY(0); }
+.modern-card:hover .card-go { opacity: 1; transform: scale(1); }
+
+/* --- ANIMATIONS --- */
+.fade-in .modern-card {
   opacity: 0;
-  transition: opacity 0.5s ease;
-  backdrop-filter: blur(2px);
+  animation: cardIn 0.7s cubic-bezier(0.2, 1, 0.3, 1) forwards;
+  animation-delay: var(--delay);
 }
 
-.explore-card:hover .explore-overlay {
-  opacity: 1;
+@keyframes cardIn {
+  from { opacity: 0; transform: translateY(30px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
-.explore-btn-text {
-  color: #000;
-  background: #fff;
-  font-size: 0.7rem;
-  text-transform: uppercase;
-  letter-spacing: 3px;
-  padding: 12px 24px;
-  transform: translateY(20px);
-  transition: transform 0.5s ease;
+.fade-out { opacity: 0; transition: opacity 0.3s ease; }
+
+/* ================================================= */
+/* RESPONSIVE QUERIES                                */
+/* ================================================= */
+
+@media (max-width: 1200px) {
+  .explore-header { padding-left: 0; }
+  .explore-modern-grid { grid-template-columns: repeat(2, 1fr); }
+  .explore-sidebar { flex: 0 0 150px; }
 }
 
-.explore-card:hover .explore-btn-text {
-  transform: translateY(0);
-}
-
-/* --- CARD INFO --- */
-.explore-card-info {
-  margin-top: 20px;
-  text-align: left;
-}
-
-.explore-card-name {
-  font-family: 'Playfair Display', serif;
-  font-size: 1.15rem;
-  font-weight: 500;
-  color: #1a1a1a;
-  margin-bottom: 5px;
-  transition: color 0.3s ease;
-}
-
-.explore-card:hover .explore-card-name {
-  color: #555;
-}
-
-.explore-card-tag {
-  font-size: 0.7rem;
-  text-transform: uppercase;
-  letter-spacing: 2px;
-  color: #888;
-  font-family: 'Inter', sans-serif;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.explore-card-tag::after {
-  content: '→';
-  transition: transform 0.3s ease;
-}
-
-.explore-card:hover .explore-card-tag::after {
-  transform: translateX(5px);
-}
-
-/* --- RESPONSIVE & ANIMATIONS --- */
-.explore-grid > * {
-  animation: slideUpFade 0.8s cubic-bezier(0.2, 1, 0.3, 1) both;
-}
-
-/* Staggered animation for grid items */
-.explore-grid > *:nth-child(1) { animation-delay: 0.1s; }
-.explore-grid > *:nth-child(2) { animation-delay: 0.2s; }
-.explore-grid > *:nth-child(3) { animation-delay: 0.3s; }
-.explore-grid > *:nth-child(4) { animation-delay: 0.4s; }
-
-@keyframes slideUpFade {
-  from {
-    opacity: 0;
-    transform: translateY(30px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-@media (max-width: 1100px) {
+@media (max-width: 900px) {
+  .explore-section { padding: 60px 5%; }
+  
   .explore-container {
-    grid-template-columns: 1fr;
+    flex-direction: column;
     gap: 40px;
   }
-  
+
   .explore-sidebar {
     position: relative;
     top: 0;
-    text-align: center;
-  }
-
-  .explore-sidebar-title {
-    font-size: 2.2rem;
-    margin-bottom: 20px;
+    flex: none;
+    width: 100%;
+    overflow: hidden;
   }
 
   .explore-list {
-    flex-direction: row;
-    justify-content: center;
+    display: flex;
+    overflow-x: auto;
     gap: 30px;
-    border-bottom: 1px solid #eee;
     padding-bottom: 10px;
+    scrollbar-width: none; /* Hide scrollbar Firefox */
   }
 
-  .explore-list-item:hover {
-    padding-left: 0;
+  .explore-list::-webkit-scrollbar {
+    display: none; /* Hide scrollbar Chrome/Safari */
+  }
+
+  .explore-list-item {
+    margin-bottom: 0;
+    flex-shrink: 0;
+  }
+
+  .tab-line {
+    width: 0;
+    margin: 5px auto 0;
+  }
+
+  .active .tab-line {
+    width: 100%;
   }
 }
 
 @media (max-width: 600px) {
-  .explore-grid {
+  .explore-modern-grid {
     grid-template-columns: 1fr;
+    gap: 15px;
   }
-  .explore-section {
-    padding: 60px 20px;
+
+  .section-title {
+    font-size: 2rem;
+  }
+
+  .card-overlay {
+    padding: 20px;
+  }
+
+  .item-name {
+    font-size: 1rem;
   }
 }

@@ -1,55 +1,58 @@
 import React from 'react';
 import Slider from "react-slick";
-
-// Styles
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import "../styles/HeroSlider.css";
-
-// Static Assets
-const banner1 = "https://images.unsplash.com/photo-1490481658327-4772827d0779?q=80&w=2070&auto=format&fit=crop";
-const banner2 = "https://images.unsplash.com/photo-1483985988355-763728e1935b?q=80&w=2070&auto=format&fit=crop";
 
 export default function HeroSlider() {
   const sliderSettings = {
     dots: true,
     infinite: true,
     autoplay: true,
-    autoplaySpeed: 5000,
-    fade: true, 
-    speed: 1500,
+    autoplaySpeed: 4000,
+    fade: true,
+    speed: 1000,
     arrows: false,
-    pauseOnHover: false,
   };
 
   const slides = [
     {
-      img: banner1,
-      subtitle: "New Collection 2026",
-      title: "NO BAD ANGLES.",
-      cta: "Shop the Look"
+      img: "https://images.unsplash.com/photo-1550684848-fac1c5b4e853?q=80&w=2070",
+      tag: "COLLECTION // 01",
+      title: "TAGTURN",
+      desc: "URBAN UTILITY & STEALTH AESTHETICS"
     },
     {
-      img: banner2,
-      subtitle: "Urban Essentials",
-      title: "STREET ELEGANCE.",
-      cta: "Explore Now"
+      img: "https://images.unsplash.com/photo-1483985988355-763728e1935b?q=80&w=2070",
+      tag: "COLLECTION // 02",
+      title: "ARCHIVE",
+      desc: "REDEFINING THE MODERN SILHOUETTE"
     }
   ];
 
   return (
-    <section className="hero-section">
-      <Slider {...sliderSettings} className="hero-wrapper">
+    <section className="asymmetric-hero">
+      <Slider {...sliderSettings}>
         {slides.map((slide, index) => (
-          <div key={index} className="hero-slide">
-            <div className="hero-overlay">
-              <div className="hero-content">
-                <span className="hero-subtitle">{slide.subtitle}</span>
-                <h2 className="hero-title">{slide.title}</h2>
-                <button className="hero-btn">{slide.cta}</button>
+          <div key={index} className="hero-slide-wrap">
+            <div className="bg-title-wrap">
+              <h1 className="bg-title">{slide.title}</h1>
+            </div>
+            
+            <div className="hero-main-flex">
+              <div className="floating-img-box">
+                <img src={slide.img} alt="Streetwear Model" />
+                <div className="img-caption">{slide.tag}</div>
+              </div>
+
+              <div className="hero-text-side">
+                <p className="hero-desc">{slide.desc}</p>
+                <div className="cta-group">
+                  <button className="stealth-btn">SHOP COLLECTION</button>
+                  <button className="link-btn">LOOKBOOK 2026</button>
+                </div>
               </div>
             </div>
-            <img src={slide.img} alt="TAGTURN" className="hero-img" />
           </div>
         ))}
       </Slider>

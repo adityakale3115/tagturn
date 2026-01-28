@@ -1,59 +1,65 @@
+import React, { useState, useEffect } from "react";
 import "./../styles/Navbar.css";
-import { FiUser, FiHeart, FiShoppingCart } from "react-icons/fi";
+import { FiUser, FiHeart, FiShoppingCart, FiMenu, FiX, FiSearch } from "react-icons/fi";
 import { useNavigate } from "react-router-dom";
-import useAuthListener from "../hooks/useAuthListener";
-import logo from "../assets/logo.jpg"; // 👈 import logo
 
-export default function Navbar() {
+export default function DarkNavbar() {
+  const [scrolled, setScrolled] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
   const navigate = useNavigate();
-  const user = useAuthListener();
 
-  const handleProfileClick = () => {
-    if (user) navigate("/profile");
-    else navigate("/login");
+  useEffect(() => {
+    const handleScroll = () => setScrolled(window.scrollY > 50);
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
+  // Close menu and navigate
+  const handleNav = (path) => {
+    setMenuOpen(false);
+    navigate(path);
   };
 
   return (
-    <div className="navbar">
-      {/* Left: Logo */}
-      <div className="nav-left" onClick={() => navigate("/")}>
-        {/* <img src={logo} alt="logo" className="nav-logo-img" /> */}
-        TagTurn
+    <nav className={`navbar ${scrolled ? "scrolled" : ""} ${menuOpen ? "menu-open" : ""}`}>
+      {/* Mobile Menu Icon */}
+      <div className="menu-toggle" onClick={() => setMenuOpen(!menuOpen)}>
+        {menuOpen ? <FiX size={24} /> : <FiMenu size={24} />}
       </div>
 
-      {/* Center: Navigation Links */}
-      <div className="nav-center">
-        <span className="nav-link" onClick={() => navigate("/about")}>
-          ABOUT US
-        </span>
-        <span className="nav-link" onClick={() => navigate("/store-locator")}>
-          STORE LOCATOR
-        </span>
-        <span className="nav-link" onClick={() => navigate("/contact")}>
-          CONTACT US
-        </span>
+      <div className="nav-left" onClick={() => handleNav("/")}>
+        TAGTURN
       </div>
 
-      {/* Right: Icons */}
+      {/* Navigation Overlay */}
+      <div className={`nav-center ${menuOpen ? "active" : ""}`}>
+        <span className="nav-link" onClick={() => handleNav("/new")}>NEW DROPS</span>
+        <span className="nav-link" onClick={() => handleNav("/collections")}>COLLECTIONS</span>
+        <span className="nav-link" onClick={() => handleNav("/lookbook")}>LOOKBOOK</span>
+        
+        {/* Mobile-only Icons inside menu */}
+        <div className="mobile-only-icons">
+           <FiHeart className="nav-icon" />
+           <FiUser className="nav-icon" />
+        </div>
+      </div>
+
       <div className="nav-right">
-        <FiHeart size={22} />
+        {/* Desktop Search Pill */}
+        <div className="search-container hide-mobile">
+          <FiSearch size={16} />
+          <input type="text" placeholder="Search..." />
+        </div>
 
-        <FiShoppingCart
-          size={22}
-          onClick={() => navigate("/cart")}
-        />
-
-        {user?.photoURL ? (
-          <img
-            src={user.photoURL}
-            alt="profile"
-            className="profile-img"
-            onClick={handleProfileClick}
-          />
-        ) : (
-          <FiUser size={22} onClick={handleProfileClick} />
-        )}
+        <FiHeart className="nav-icon hide-mobile" />
+        
+        <div className="cart-wrapper" onClick={() => handleNav("/cart")}>
+          <FiShoppingCart className="nav-icon" />
+          <span className="badge">3</span>
+        </div>
+        
+        <FiUser className="nav-icon hide-mobile" />
       </div>
-    </div>
+    </nav>
   );
 }
