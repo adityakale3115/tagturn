@@ -43,7 +43,7 @@ export default function ExploreCategories() {
   return (
     <section className="explore-section">
       <div className="explore-header">
-        <span className="section-tag">// SELECT ARCHIVE</span>
+        <span className="section-tag">{`// SELECT ARCHIVE`}</span>
         <h2 className="section-title">Collections</h2>
       </div>
 
@@ -51,8 +51,8 @@ export default function ExploreCategories() {
         <div className="explore-sidebar">
           <ul className="explore-list">
             {Object.keys(COLLECTION_DATA).map((tab) => (
-              <li 
-                key={tab} 
+              <li
+                key={tab}
                 className={`explore-list-item ${activeTab === tab ? "active" : ""}`}
                 onClick={() => handleTabChange(tab)}
               >
@@ -65,8 +65,8 @@ export default function ExploreCategories() {
 
         <div className={`explore-modern-grid ${isVisible ? "fade-in" : "fade-out"}`}>
           {COLLECTION_DATA[activeTab].map((item, index) => (
-            <div 
-              key={item.id} 
+            <div
+              key={item.id}
               className="modern-card"
               style={{ "--delay": `${index * 0.1}s` }}
               onClick={() => handleRedirection(activeTab)}
