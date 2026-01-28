@@ -35,7 +35,11 @@ export default function Footer() {
               <h4 className="col-title">{sec.title}</h4>
               <ul className="col-links">
                 {sec.items.map((item, i) => (
-                  <li key={i}><a href="#">{item}</a></li>
+                  <li key={i}>
+                    <a href="/" onClick={(e) => e.preventDefault()}>
+                      {item}
+                    </a>
+                  </li>
                 ))}
               </ul>
             </div>
@@ -67,15 +71,21 @@ export default function Footer() {
         {/* Bottom: Apps & Socials */}
         <div className="footer-bottom">
           <div className="apps">
-            <img src="https://upload.wikimedia.org/wikipedia/commons/7/78/Google_Play_Store_badge_EN.svg" alt="Play Store" />
-            <img src="https://upload.wikimedia.org/wikipedia/commons/3/3c/Download_on_the_App_Store_Badge.svg" alt="App Store" />
+            <img
+              src="https://upload.wikimedia.org/wikipedia/commons/7/78/Google_Play_Store_badge_EN.svg"
+              alt="Play Store"
+            />
+            <img
+              src="https://upload.wikimedia.org/wikipedia/commons/3/3c/Download_on_the_App_Store_Badge.svg"
+              alt="App Store"
+            />
           </div>
 
           <div className="socials">
-            <a href="#"><Facebook size={18} /></a>
+            <a href="/" onClick={(e) => e.preventDefault()}><Facebook size={18} /></a>
             <a href="https://www.instagram.com/tagturn.in"><Instagram size={18} /></a>
-            <a href="#"><Youtube size={18} /></a>
-            <a href="#"><Twitter size={18} /></a>
+            <a href="/" onClick={(e) => e.preventDefault()}><Youtube size={18} /></a>
+            <a href="/" onClick={(e) => e.preventDefault()}><Twitter size={18} /></a>
           </div>
         </div>
 

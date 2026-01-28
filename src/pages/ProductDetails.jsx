@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { Heart, Minus, Plus, ShoppingCart, ArrowLeft } from "lucide-react";
+import { Minus, Plus, ShoppingCart, ArrowLeft } from "lucide-react";
 import { toast } from "react-toastify";
 import Navbar from "../components/Navbar";
 import "../styles/ProductDetails.css";
@@ -34,11 +34,12 @@ export default function ProductDetails() {
     if (foundProduct) {
       setProduct(foundProduct);
       setActiveImage(foundProduct.images[0]);
-      const related = MOCK_PRODUCTS.filter(
-        (p) => p.category === foundProduct.category && p.id !== foundProduct.id
-      ).slice(0, 4);
+      const related = MOCK_PRODUCTS
+        .filter(p => p.category === foundProduct.category && p.id !== foundProduct.id)
+        .slice(0, 4);
       setRelatedProducts(related);
     }
+
     setLoading(false);
   }, [id]);
 
@@ -50,7 +51,10 @@ export default function ProductDetails() {
   };
 
   const decreaseQty = () => quantity > 1 && setQuantity(quantity - 1);
-  const increaseQty = () => quantity < product.stock ? setQuantity(quantity + 1) : toast.info("Stock limit reached");
+  const increaseQty = () =>
+    quantity < product.stock
+      ? setQuantity(quantity + 1)
+      : toast.info("Stock limit reached");
 
   if (loading) return <div className="stealth-loader">INITIALIZING...</div>;
   if (!product) return <div className="stealth-error">ARTICLE NOT FOUND</div>;
@@ -58,22 +62,26 @@ export default function ProductDetails() {
   return (
     <div className="stealth-product-wrapper">
       <Navbar />
+
       <div className="product-main-container">
         <button className="back-link" onClick={() => navigate(-1)}>
-          <ArrowLeft size={14} /> // BACK TO ARCHIVE
+          <ArrowLeft size={14} />
+          <span>BACK TO ARCHIVE</span>
         </button>
 
         <div className="product-layout-grid">
-          {/* LEFT: MEDIA SECTION */}
           <div className="media-column">
             <div className="main-display">
-              {product.discount && <span className="discount-tag">-{product.discount}%</span>}
+              {product.discount && (
+                <span className="discount-tag">-{product.discount}%</span>
+              )}
               <img src={activeImage} alt={product.name} className="hero-product-img" />
             </div>
+
             <div className="thumbnail-gallery">
               {product.images?.map((img, i) => (
-                <div 
-                  key={i} 
+                <div
+                  key={i}
                   className={`thumb-item ${activeImage === img ? "selected" : ""}`}
                   onClick={() => setActiveImage(img)}
                 >
@@ -83,7 +91,6 @@ export default function ProductDetails() {
             </div>
           </div>
 
-          {/* RIGHT: CONFIGURATION SECTION */}
           <div className="info-column">
             <div className="brand-header">
               <span className="collection-label">TAGTURN // ARCHIVE 2026</span>
@@ -93,18 +100,22 @@ export default function ProductDetails() {
             <div className="price-box">
               <span className="price-main">₹{product.price.toLocaleString()}</span>
               {product.original_price && (
-                <span className="price-original">₹{product.original_price.toLocaleString()}</span>
+                <span className="price-original">
+                  ₹{product.original_price.toLocaleString()}
+                </span>
               )}
             </div>
 
-            <div className={`stock-status ${product.stock < 5 ? 'critical' : ''}`}>
-              {product.stock > 0 ? `AVAILABLE: [ ${product.stock} UNITS ]` : "STATUS: ARCHIVED / OUT OF STOCK"}
+            <div className={`stock-status ${product.stock < 5 ? "critical" : ""}`}>
+              {product.stock > 0
+                ? `AVAILABLE: [ ${product.stock} UNITS ]`
+                : "STATUS: ARCHIVED / OUT OF STOCK"}
             </div>
 
             <div className="config-group">
               <p className="config-label">SELECT SIZE</p>
               <div className="size-selector-grid">
-                {product.sizes?.map((size) => (
+                {product.sizes?.map(size => (
                   <button
                     key={size}
                     className={`size-square ${selectedSize === size ? "active" : ""}`}
@@ -119,23 +130,31 @@ export default function ProductDetails() {
             <div className="config-group">
               <p className="config-label">QUANTITY</p>
               <div className="stealth-counter">
-                <button onClick={decreaseQty} disabled={product.stock === 0}><Minus size={14}/></button>
+                <button onClick={decreaseQty} disabled={product.stock === 0}>
+                  <Minus size={14} />
+                </button>
                 <span className="qty-val">{quantity}</span>
-                <button onClick={increaseQty} disabled={product.stock === 0}><Plus size={14}/></button>
+                <button onClick={increaseQty} disabled={product.stock === 0}>
+                  <Plus size={14} />
+                </button>
               </div>
             </div>
 
             <div className="action-stack">
-              <button 
-                className="bag-btn-dark" 
-                onClick={addToCart} 
+              <button
+                className="bag-btn-dark"
+                onClick={addToCart}
                 disabled={product.stock === 0}
               >
                 <ShoppingCart size={16} /> ADD TO BAG
               </button>
-              <button 
-                className="checkout-btn-neon" 
-                onClick={() => { addToCart(); navigate("/cart"); }}
+
+              <button
+                className="checkout-btn-neon"
+                onClick={() => {
+                  addToCart();
+                  navigate("/cart");
+                }}
                 disabled={product.stock === 0}
               >
                 PROCEED TO CHECKOUT
@@ -144,14 +163,18 @@ export default function ProductDetails() {
           </div>
         </div>
 
-        {/* RELATED SECTION */}
         {relatedProducts.length > 0 && (
           <div className="archive-related">
             <div className="neon-line"></div>
             <h2 className="related-title">Complete the look</h2>
+
             <div className="related-grid-stealth">
-              {relatedProducts.map((item) => (
-                <div key={item.id} className="related-article" onClick={() => navigate(`/product/${item.id}`)}>
+              {relatedProducts.map(item => (
+                <div
+                  key={item.id}
+                  className="related-article"
+                  onClick={() => navigate(`/product/${item.id}`)}
+                >
                   <div className="article-img">
                     <img src={item.images?.[0]} alt={item.name} />
                   </div>

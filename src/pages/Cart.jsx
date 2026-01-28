@@ -1,5 +1,5 @@
-import { useEffect, useState } from "react";
-import { supabase } from "../supabase/supabaseClient"; // Updated to Supabase
+import { useEffect, useState, useCallback } from "react";
+import { supabase } from "../supabase/supabaseClient";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import useAuthListener from "../hooks/useAuthListener";
@@ -13,45 +13,41 @@ export default function Cart() {
   const [loading, setLoading] = useState(true);
 
   /* ---------------- FETCH CART ITEMS ---------------- */
-  /* ---------------- FETCH CART ITEMS ---------------- */
-const fetchCart = async () => {
-  const userId = user?.id || user?.uid;
-  if (!userId) return;
+  const fetchCart = useCallback(async () => {
+    const userId = user?.id || user?.uid;
+    if (!userId) return;
 
-  // DEBUG: Uncomment this to see exactly what ID is being queried
-  // console.log("Fetching cart for ID:", userId);
+    try {
+      const { data, error } = await supabase
+        .from("cart")
+        .select("*")
+        .eq("user_id", userId)
+        .order("created_at", { ascending: false });
 
-  try {
-    const { data, error } = await supabase
-      .from("cart")
-      .select("*")
-      .eq("user_id", userId) // This will now match the TEXT column perfectly
-      .order("created_at", { ascending: false });
-
-    if (error) throw error;
-    setCartItems(data || []);
-  } catch (err) {
-    console.error("Error fetching cart:", err.message);
-    toast.error("Failed to load cart");
-  } finally {
-    setLoading(false);
-  }
-};
+      if (error) throw error;
+      setCartItems(data || []);
+    } catch (err) {
+      console.error("Error fetching cart:", err.message);
+      toast.error("Failed to load cart");
+    } finally {
+      setLoading(false);
+    }
+  }, [user]);
 
   useEffect(() => {
     if (user) {
       fetchCart();
     } else {
-      // Small delay to check if user is truly logged out
       const timer = setTimeout(() => {
         if (!user) {
           toast.info("Please login to view cart");
           navigate("/login");
         }
       }, 1000);
+
       return () => clearTimeout(timer);
     }
-  }, [user, navigate]);
+  }, [user, navigate, fetchCart]);
 
   /* ---------------- UPDATE QUANTITY ---------------- */
   const updateQuantity = async (item, change) => {
@@ -65,12 +61,11 @@ const fetchCart = async () => {
         .eq("id", item.id);
 
       if (error) throw error;
-      
-      // Update local state for instant UI feedback
-      setCartItems(prev => 
+
+      setCartItems(prev =>
         prev.map(i => i.id === item.id ? { ...i, quantity: newQty } : i)
       );
-    } catch (err) {
+    } catch {
       toast.error("Update failed");
     }
   };
@@ -87,13 +82,16 @@ const fetchCart = async () => {
 
       toast.success("Item removed");
       setCartItems(prev => prev.filter(i => i.id !== itemId));
-    } catch (err) {
+    } catch {
       toast.error("Remove failed");
     }
   };
 
   /* ---------------- CALCULATE TOTAL ---------------- */
-  const totalPrice = cartItems.reduce((sum, item) => sum + item.price * item.quantity, 0);
+  const totalPrice = cartItems.reduce(
+    (sum, item) => sum + item.price * item.quantity,
+    0
+  );
 
   if (loading) return <p className="cart-loading">Loading your cart...</p>;
 
@@ -112,7 +110,6 @@ const fetchCart = async () => {
       <h1 className="cart-title">🛒 Your Cart</h1>
 
       <div className="cart-content">
-        {/* CART ITEMS LIST */}
         <div className="cart-items">
           {cartItems.map((item) => (
             <div key={item.id} className="cart-card">
@@ -137,7 +134,6 @@ const fetchCart = async () => {
           ))}
         </div>
 
-        {/* SUMMARY BOX */}
         <div className="cart-summary">
           <h2>Order Summary</h2>
           <div className="summary-row">
