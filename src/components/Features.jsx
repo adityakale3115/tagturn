@@ -10,7 +10,10 @@ export default function BrandIntro() {
         {/* Main Feature Box */}
         <div className="bento-item main-feature">
           <div className="feature-header">
-            <span className="stealth-tag">// THE NEW STANDARD</span>
+            {/* FIX: Use {"// "} to render the slashes as a string 
+                or just keep them as plain text without a comment-like structure 
+            */}
+            <span className="stealth-tag">{"//"} THE NEW STANDARD</span>
             <h2 className="bento-title">WEAR THE <br/><span>ARCHIVE.</span></h2>
           </div>
           <p className="feature-text">
