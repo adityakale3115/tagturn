@@ -4,7 +4,6 @@ import "../styles/CustomCursor.css";
 export default function LiquidCursor() {
   const cursorRef = useRef(null);
   const cursorDotRef = useRef(null);
-  const trailRefs = useRef([]);
   const [isHovered, setIsHovered] = useState(false);
   const [isClicking, setIsClicking] = useState(false);
   const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
@@ -20,7 +19,6 @@ export default function LiquidCursor() {
       const x = e.clientX;
       const y = e.clientY;
 
-      // Calculate velocity for dynamic effects
       velocity.x = x - lastX;
       velocity.y = y - lastY;
       lastX = x;
@@ -29,7 +27,6 @@ export default function LiquidCursor() {
       setMousePos({ x, y });
 
       if (cursorRef.current) {
-        // Smooth elastic movement
         cursorRef.current.style.left = `${x}px`;
         cursorRef.current.style.top = `${y}px`;
       }
@@ -39,16 +36,15 @@ export default function LiquidCursor() {
         cursorDotRef.current.style.top = `${y}px`;
       }
 
-      // Add trail effect
       addTrail(x, y, velocity);
     };
 
     const addTrail = (x, y, vel) => {
       const speed = Math.sqrt(vel.x ** 2 + vel.y ** 2);
-      
+
       if (speed > 2) {
         setTrails((prev) => [
-          ...prev.slice(-15), // Keep last 15 trails
+          ...prev.slice(-15),
           {
             id: Date.now() + Math.random(),
             x,
@@ -84,7 +80,6 @@ export default function LiquidCursor() {
       ripple.style.left = `${x}px`;
       ripple.style.top = `${y}px`;
       document.body.appendChild(ripple);
-
       setTimeout(() => ripple.remove(), 800);
     };
 
@@ -93,7 +88,6 @@ export default function LiquidCursor() {
     window.addEventListener("mouseup", handleMouseUp);
     window.addEventListener("mouseover", handleMouseOver);
 
-    // Cleanup trails periodically
     const trailCleanup = setInterval(() => {
       setTrails((prev) => prev.slice(-10));
     }, 100);
@@ -110,7 +104,6 @@ export default function LiquidCursor() {
 
   return (
     <>
-      {/* Main cursor ring */}
       <div
         ref={cursorRef}
         className={`liquid-cursor ${isHovered ? "hovered" : ""} ${
@@ -120,13 +113,11 @@ export default function LiquidCursor() {
         <div className="cursor-inner"></div>
       </div>
 
-      {/* Center dot */}
       <div
         ref={cursorDotRef}
         className={`cursor-dot ${isClicking ? "clicking" : ""}`}
-      ></div>
+      />
 
-      {/* Particle trails */}
       {trails.map((trail) => (
         <div
           key={trail.id}

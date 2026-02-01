@@ -3,7 +3,6 @@ import Navbar from "../components/Navbar";
 import { Link, useNavigate } from "react-router-dom";
 import "../styles/Auth.css";
 
-// 1. Firebase Imports
 import { 
   getAuth, 
   signInWithEmailAndPassword, 
@@ -21,7 +20,6 @@ export default function Login() {
   const auth = getAuth();
   const googleProvider = new GoogleAuthProvider();
 
-  // 2. Email/Password Login Logic
   const handleEmailLogin = async (e) => {
     e.preventDefault();
     setLoading(true);
@@ -29,7 +27,7 @@ export default function Login() {
 
     try {
       await signInWithEmailAndPassword(auth, email, password);
-      navigate("/profile"); // Redirect on success
+      navigate("/profile"); 
     } catch (err) {
       setError("INVALID CREDENTIALS. ACCESS DENIED.");
       console.error(err);
@@ -38,7 +36,6 @@ export default function Login() {
     }
   };
 
-  // 3. Google Login Logic
   const handleGoogleLogin = async () => {
     setLoading(true);
     setError("");
@@ -60,7 +57,7 @@ export default function Login() {
       <div className="auth-container-stealth">
         <div className="auth-card-glass">
           <div className="auth-header">
-            <span className="stealth-tag">// ACCESS PORTAL</span>
+            <span className="stealth-tag"> ACCESS PORTAL</span>
             <h2>IDENTIFY YOURSELF</h2>
             <p className="auth-subtitle">
               Enter the archive to manage your collection.

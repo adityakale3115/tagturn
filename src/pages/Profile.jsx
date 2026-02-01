@@ -4,7 +4,6 @@ import { User, MapPin, Phone, Trash2, LogOut, Shield } from "lucide-react";
 import Navbar from "../components/Navbar";
 import "../styles/Profile.css";
 
-// 1. Firebase Imports
 import { getAuth, signOut, onAuthStateChanged } from "firebase/auth";
 import { getFirestore, doc, getDoc, setDoc, updateDoc } from "firebase/firestore";
 
@@ -24,7 +23,6 @@ export default function Profile() {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
 
-  // 2. Fetch User Data on Load
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
       if (user) {
@@ -34,19 +32,18 @@ export default function Profile() {
         if (docSnap.exists()) {
           setFormData(docSnap.data());
         } else {
-          // If no doc exists, pre-fill email from Auth
+
           setFormData((prev) => ({ ...prev, email: user.email }));
         }
         setLoading(false);
       } else {
-        navigate("/login"); // Redirect if session expires
+        navigate("/login"); 
       }
     });
 
     return () => unsubscribe();
   }, [auth, db, navigate]);
 
-  // 3. Save/Update Logic
   const handleSave = async () => {
     if (!auth.currentUser) return;
     
@@ -54,7 +51,7 @@ export default function Profile() {
     try {
       const userRef = doc(db, "users", auth.currentUser.uid);
       
-      // setDoc with { merge: true } creates the doc if it doesn't exist
+
       await setDoc(userRef, formData, { merge: true });
       
       alert("LOCAL ARCHIVE UPDATED");
@@ -66,7 +63,6 @@ export default function Profile() {
     }
   };
 
-  // 4. Logout Logic
   const handleLogout = async () => {
     try {
       await signOut(auth);
@@ -89,7 +85,7 @@ export default function Profile() {
             <div className="id-avatar">
               <Shield size={40} className="accent-icon" />
             </div>
-            <span className="stealth-tag">// AUTHENTICATED</span>
+            <span className="stealth-tag">AUTHENTICATED</span>
             <h2 className="user-full-name">{formData.firstName || "OPERATIVE"} {formData.lastName || "N/A"}</h2>
             <p className="user-email-static">{formData.email}</p>
           </div>

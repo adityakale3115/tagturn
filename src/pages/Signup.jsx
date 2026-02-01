@@ -9,7 +9,7 @@ export default function Signup() {
       <div className="auth-container-stealth">
         <div className="auth-card-glass">
           <div className="auth-header">
-            <span className="stealth-tag">// NEW IDENTITY</span>
+            <span className="stealth-tag">NEW IDENTITY</span>
             <h2>JOIN THE ARCHIVE</h2>
             <p className="auth-subtitle">
               Establish your credentials to access exclusive drops.

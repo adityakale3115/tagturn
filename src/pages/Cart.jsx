@@ -23,7 +23,7 @@ export default function Cart() {
         {/* Header with Navigation */}
         <header className="cart-header">
           <button className="back-to-store" onClick={() => navigate("/")}>
-            <ChevronLeft size={16} /> // BACK_TO_SEARCH
+            <ChevronLeft size={16} /> BACK_TO_SEARCH
           </button>
           <h1 className="cart-main-title">YOUR ARCHIVE <span>[{cartItems.length}]</span></h1>
         </header>
