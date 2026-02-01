@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { User, MapPin, Phone, Trash2, LogOut, Shield } from "lucide-react";
+import { MapPin, Phone, Trash2, LogOut, Shield } from "lucide-react";
 import Navbar from "../components/Navbar";
 import "../styles/Profile.css";
 
 import { getAuth, signOut, onAuthStateChanged } from "firebase/auth";
-import { getFirestore, doc, getDoc, setDoc, updateDoc } from "firebase/firestore";
+import { getFirestore, doc, getDoc, setDoc } from "firebase/firestore";
 
 export default function Profile() {
   const navigate = useNavigate();
