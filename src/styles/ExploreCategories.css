@@ -88,6 +88,9 @@
   cursor: pointer;
   overflow: hidden;
   border: 1px solid var(--border);
+  /* Initial state for animation */
+  opacity: 0;
+  transform: translateY(60px) scale(0.9);
 }
 
 .card-img {
@@ -157,19 +160,212 @@
 .modern-card:hover .item-qty { opacity: 1; transform: translateY(0); }
 .modern-card:hover .card-go { opacity: 1; transform: scale(1); }
 
-/* --- ANIMATIONS --- */
+/* --- ENHANCED ENTRY ANIMATIONS --- */
+
+/* Main fade-in animation with elastic bounce */
 .fade-in .modern-card {
-  opacity: 0;
-  animation: cardIn 0.7s cubic-bezier(0.2, 1, 0.3, 1) forwards;
+  animation: cardEntryElastic 0.9s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
   animation-delay: var(--delay);
 }
 
-@keyframes cardIn {
-  from { opacity: 0; transform: translateY(30px); }
-  to { opacity: 1; transform: translateY(0); }
+@keyframes cardEntryElastic {
+  0% {
+    opacity: 0;
+    transform: translateY(60px) scale(0.9) rotateX(10deg);
+  }
+  60% {
+    opacity: 1;
+    transform: translateY(-8px) scale(1.02) rotateX(-2deg);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1) rotateX(0deg);
+  }
 }
 
-.fade-out { opacity: 0; transition: opacity 0.3s ease; }
+/* Alternative: Slide from side with rotation */
+.fade-in.slide-rotate .modern-card {
+  animation: cardSlideRotate 0.8s cubic-bezier(0.2, 1, 0.3, 1) forwards;
+  animation-delay: var(--delay);
+}
+
+@keyframes cardSlideRotate {
+  0% {
+    opacity: 0;
+    transform: translateX(-80px) rotate(-5deg) scale(0.85);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(0) rotate(0deg) scale(1);
+  }
+}
+
+/* Alternative: Zoom from center with glow */
+.fade-in.zoom-glow .modern-card {
+  animation: cardZoomGlow 0.7s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+  animation-delay: var(--delay);
+}
+
+@keyframes cardZoomGlow {
+  0% {
+    opacity: 0;
+    transform: scale(0.5);
+    filter: brightness(2) blur(10px);
+  }
+  70% {
+    filter: brightness(1.2) blur(0px);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+    filter: brightness(1) blur(0px);
+  }
+}
+
+/* Alternative: Flip entrance */
+.fade-in.flip-in .modern-card {
+  animation: cardFlipIn 0.8s cubic-bezier(0.2, 1, 0.3, 1) forwards;
+  animation-delay: var(--delay);
+  transform-style: preserve-3d;
+}
+
+@keyframes cardFlipIn {
+  0% {
+    opacity: 0;
+    transform: perspective(1000px) rotateY(90deg) translateY(30px);
+  }
+  100% {
+    opacity: 1;
+    transform: perspective(1000px) rotateY(0deg) translateY(0);
+  }
+}
+
+/* Stagger effect on card inner elements */
+.fade-in .modern-card .card-img {
+  opacity: 0;
+  animation: imageReveal 0.8s ease-out forwards;
+  animation-delay: calc(var(--delay) + 0.2s);
+}
+
+@keyframes imageReveal {
+  0% {
+    opacity: 0;
+    transform: scale(1.3);
+    filter: brightness(0.5) blur(8px);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+    filter: brightness(0.9) blur(0px);
+  }
+}
+
+.fade-in .modern-card .item-name {
+  opacity: 0;
+  transform: translateY(20px);
+  animation: textSlideUp 0.6s ease-out forwards;
+  animation-delay: calc(var(--delay) + 0.4s);
+}
+
+@keyframes textSlideUp {
+  0% {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.fade-in .modern-card .card-go {
+  animation: iconPop 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+  animation-delay: calc(var(--delay) + 0.5s);
+}
+
+@keyframes iconPop {
+  0% {
+    opacity: 0;
+    transform: scale(0) rotate(-180deg);
+  }
+  100% {
+    opacity: 0; /* Stays hidden until hover */
+    transform: scale(0.5) rotate(0deg);
+  }
+}
+
+/* Shimmer effect on load */
+.fade-in .modern-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.1),
+    transparent
+  );
+  z-index: 2;
+  animation: shimmer 1.5s ease-out;
+  animation-delay: calc(var(--delay) + 0.3s);
+}
+
+@keyframes shimmer {
+  0% {
+    left: -100%;
+  }
+  100% {
+    left: 200%;
+  }
+}
+
+/* Pulse border on entry */
+.fade-in .modern-card::after {
+  content: '';
+  position: absolute;
+  inset: -2px;
+  border: 2px solid var(--accent);
+  opacity: 0;
+  animation: borderPulse 1s ease-out;
+  animation-delay: var(--delay);
+}
+
+@keyframes borderPulse {
+  0% {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  50% {
+    opacity: 0.6;
+    transform: scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(1.05);
+  }
+}
+
+/* Exit animation */
+.fade-out {
+  opacity: 0;
+  transform: scale(0.95) translateY(20px);
+  transition: opacity 0.4s ease, transform 0.4s cubic-bezier(0.2, 1, 0.3, 1);
+}
+
+/* Hover animation enhancement */
+.modern-card {
+  transition: transform 0.4s cubic-bezier(0.2, 1, 0.3, 1),
+              box-shadow 0.4s ease;
+}
+
+.modern-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4),
+              0 0 20px rgba(var(--accent-rgb, 255, 50, 80), 0.3);
+}
 
 /* ================================================= */
 /* RESPONSIVE QUERIES                                */
@@ -222,6 +418,18 @@
   .active .tab-line {
     width: 100%;
   }
+
+  /* Reduce animation intensity on mobile */
+  @keyframes cardEntryElastic {
+    0% {
+      opacity: 0;
+      transform: translateY(30px) scale(0.95);
+    }
+    100% {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+    }
+  }
 }
 
 @media (max-width: 600px) {
@@ -241,4 +449,61 @@
   .item-name {
     font-size: 1rem;
   }
+}
+
+/* Reduce motion for accessibility */
+@media (prefers-reduced-motion: reduce) {
+  .modern-card,
+  .card-img,
+  .item-qty,
+  .card-go {
+    animation: none !important;
+    transition: opacity 0.3s ease !important;
+  }
+  
+  .fade-in .modern-card {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.tagturn-preloader {
+  grid-column: 1 / -1; /* Spans the full width of the grid */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 300px;
+  width: 100%;
+}
+
+.loader-content {
+  text-align: center;
+}
+
+.loader-text {
+  font-size: 2.5rem;
+  font-weight: 900;
+  letter-spacing: 10px;
+  color: #ffffff; /* Match your theme color */
+  margin: 0;
+  animation: pulseSkew 1.5s infinite ease-in-out;
+}
+
+.loader-bar {
+  width: 0;
+  height: 2px;
+  background: #ffffff;
+  margin-top: 10px;
+  animation: growBar 1.5s infinite ease-in-out;
+}
+
+@keyframes pulseSkew {
+  0%, 100% { opacity: 0.3; transform: skewX(-10deg); }
+  50% { opacity: 1; transform: skewX(10deg); }
+}
+
+@keyframes growBar {
+  0% { width: 0; margin-left: 0; }
+  50% { width: 100%; margin-left: 0; }
+  100% { width: 0; margin-left: 100%; }
 }

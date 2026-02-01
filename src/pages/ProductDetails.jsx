@@ -1,22 +1,17 @@
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { Minus, Plus, ShoppingCart, ArrowLeft } from "lucide-react";
+import { doc, getDoc, collection, query, where, limit, getDocs, setDoc, updateDoc, arrayUnion, serverTimestamp } from "firebase/firestore";
+import { getAuth } from "firebase/auth"; // Import Firebase Auth
+import { db } from "../firebase/firebaseConfig";
+import { Minus, Plus, ShoppingCart, ArrowLeft, Loader2 } from "lucide-react";
 import { toast } from "react-toastify";
 import Navbar from "../components/Navbar";
 import "../styles/ProductDetails.css";
 
-const MOCK_PRODUCTS = [
-  { id: 1, name: "Premium Oversized Tee", category: "Men", price: 1299, original_price: 1899, discount: 30, sizes: ["M", "L", "XL"], stock: 10, images: ["https://images.unsplash.com/photo-1521572267360-ee0c2909d518?q=80&w=800"] },
-  { id: 2, name: "Classic Linen Shirt", category: "Men", price: 2499, original_price: 3500, discount: 25, sizes: ["S", "M", "L"], stock: 5, images: ["https://images.unsplash.com/photo-1596755094514-f87e34085b2c?q=80&w=800"] },
-  { id: 3, name: "Straight Fit Chinos", category: "Men", price: 1899, original_price: 2200, discount: 15, sizes: ["L", "XL", "XXL"], stock: 8, images: ["https://images.unsplash.com/photo-1473966968600-fa804b86829b?q=80&w=800"] },
-  { id: 4, name: "Urban Utility Jacket", category: "Men", price: 3499, original_price: 4999, discount: 40, sizes: ["XL", "XXL"], stock: 3, images: ["https://images.unsplash.com/photo-1591047134402-23bbdddf4874?q=80&w=800"] },
-  { id: 5, name: "Minimalist Hoodie", category: "Men", price: 2199, original_price: 2999, discount: 20, sizes: ["M", "L"], stock: 12, images: ["https://images.unsplash.com/photo-1556821840-3a63f95609a7?q=80&w=800"] },
-  { id: 6, name: "Graphic Cotton Tee", category: "Men", price: 999, original_price: 1499, discount: 33, sizes: ["S", "M"], stock: 0, images: ["https://images.unsplash.com/photo-1576566588028-4147f3842f27?q=80&w=800"] },
-];
-
 export default function ProductDetails() {
   const { id } = useParams();
   const navigate = useNavigate();
+  const auth = getAuth(); // Initialize Auth
 
   const [product, setProduct] = useState(null);
   const [relatedProducts, setRelatedProducts] = useState([]);
@@ -24,30 +19,116 @@ export default function ProductDetails() {
   const [selectedSize, setSelectedSize] = useState("");
   const [activeImage, setActiveImage] = useState("");
   const [loading, setLoading] = useState(true);
+  const [isAdding, setIsAdding] = useState(false); // Loading state for button
 
   useEffect(() => {
-    window.scrollTo(0, 0);
-    setLoading(true);
+    const fetchFullProductData = async () => {
+      window.scrollTo(0, 0);
+      setLoading(true);
 
-    const foundProduct = MOCK_PRODUCTS.find((p) => p.id === Number(id));
+      try {
+        const docRef = doc(db, "products", id);
+        const docSnap = await getDoc(docRef);
 
-    if (foundProduct) {
-      setProduct(foundProduct);
-      setActiveImage(foundProduct.images[0]);
-      const related = MOCK_PRODUCTS
-        .filter(p => p.category === foundProduct.category && p.id !== foundProduct.id)
-        .slice(0, 4);
-      setRelatedProducts(related);
-    }
+        if (docSnap.exists()) {
+          const productData = { id: docSnap.id, ...docSnap.data() };
+          setProduct(productData);
+          setActiveImage(productData.images?.[0] || "");
+          
+          const relatedQuery = query(
+            collection(db, "products"),
+            where("category", "==", productData.category),
+            limit(5)
+          );
+          
+          const relatedSnap = await getDocs(relatedQuery);
+          const relatedList = relatedSnap.docs
+            .map(d => ({ id: d.id, ...d.data() }))
+            .filter(item => item.id !== id)
+            .slice(0, 4);
+          
+          setRelatedProducts(relatedList);
+        } else {
+          setProduct(null);
+        }
+      } catch (error) {
+        console.error("Firestore Fetch Error:", error);
+        toast.error("ERROR: FAILED_TO_RETRIEVE_ARTICLE");
+      } finally {
+        setLoading(false);
+      }
+    };
 
-    setLoading(false);
+    if (id) fetchFullProductData();
   }, [id]);
 
-  const addToCart = () => {
+  /* ================= FIRESTORE CART LOGIC ================= */
+  const addToCart = async () => {
+    const user = auth.currentUser;
+
+    // 1️⃣ Check if user is logged in
+    if (!user) {
+      toast.info("Please login to add items to your bag");
+      return navigate("/login");
+    }
+
+    // 2️⃣ Check if size is selected
     if (!selectedSize && product.sizes?.length > 0) {
       return toast.error("Please select a size");
     }
-    toast.success(`${product.name} (${selectedSize}) added to bag`);
+
+    setIsAdding(true);
+
+    try {
+      const cartRef = doc(db, "carts", user.uid);
+      const cartSnap = await getDoc(cartRef);
+
+      const cartItem = {
+        cartItemId: `${id}_${selectedSize}`, // Unique ID for this specific variation
+        id: id,
+        name: product.name,
+        price: product.price,
+        image: product.images[0],
+        size: selectedSize,
+        quantity: quantity,
+        addedAt: new Date().toISOString()
+      };
+
+      if (cartSnap.exists()) {
+        const existingItems = cartSnap.data().items || [];
+        const existingItemIndex = existingItems.findIndex(item => item.cartItemId === cartItem.cartItemId);
+
+        if (existingItemIndex > -1) {
+          // If item exists, update quantity
+          existingItems[existingItemIndex].quantity += quantity;
+          await updateDoc(cartRef, {
+            items: existingItems,
+            lastUpdated: serverTimestamp()
+          });
+        } else {
+          // If item is new, add to array
+          await updateDoc(cartRef, {
+            items: arrayUnion(cartItem),
+            lastUpdated: serverTimestamp()
+          });
+        }
+      } else {
+        // Create new cart document
+        await setDoc(cartRef, {
+          userId: user.uid,
+          userEmail: user.email,
+          items: [cartItem],
+          createdAt: serverTimestamp()
+        });
+      }
+
+      toast.success(`${product.name} added to bag`);
+    } catch (error) {
+      console.error("Cart Error:", error);
+      toast.error("FAILED_TO_UPDATE_BAG");
+    } finally {
+      setIsAdding(false);
+    }
   };
 
   const decreaseQty = () => quantity > 1 && setQuantity(quantity - 1);
@@ -56,8 +137,22 @@ export default function ProductDetails() {
       ? setQuantity(quantity + 1)
       : toast.info("Stock limit reached");
 
-  if (loading) return <div className="stealth-loader">INITIALIZING...</div>;
-  if (!product) return <div className="stealth-error">ARTICLE NOT FOUND</div>;
+  if (loading) return (
+    <div className="stealth-loader-container">
+       <Loader2 className="spinner-neon" size={40} />
+       <p>DECRYPTING_ARTICLE_DATA...</p>
+    </div>
+  );
+  
+  if (!product) return (
+    <div className="stealth-page-wrapper">
+      <Navbar />
+      <div className="stealth-error">
+        <h2>404 // ARTICLE_NOT_FOUND</h2>
+        <button onClick={() => navigate("/")}>RETURN_TO_ARCHIVE</button>
+      </div>
+    </div>
+  );
 
   return (
     <div className="stealth-product-wrapper">
@@ -93,12 +188,13 @@ export default function ProductDetails() {
 
           <div className="info-column">
             <div className="brand-header">
-              <span className="collection-label">TAGTURN // ARCHIVE 2026</span>
+              <span className="collection-label">TAGTURN // AUTHENTIC_WEAR</span>
               <h1 className="product-name-title">{product.name}</h1>
+              <p className="vendor-meta">STORE_ID: {product.shop_id?.slice(0,8)}</p>
             </div>
 
             <div className="price-box">
-              <span className="price-main">₹{product.price.toLocaleString()}</span>
+              <span className="price-main">₹{product.price?.toLocaleString()}</span>
               {product.original_price && (
                 <span className="price-original">
                   ₹{product.original_price.toLocaleString()}
@@ -144,18 +240,19 @@ export default function ProductDetails() {
               <button
                 className="bag-btn-dark"
                 onClick={addToCart}
-                disabled={product.stock === 0}
+                disabled={product.stock === 0 || isAdding}
               >
-                <ShoppingCart size={16} /> ADD TO BAG
+                {isAdding ? <Loader2 className="animate-spin" size={16} /> : <ShoppingCart size={16} />} 
+                {isAdding ? " UPDATING..." : " ADD TO BAG"}
               </button>
 
               <button
                 className="checkout-btn-neon"
-                onClick={() => {
-                  addToCart();
-                  navigate("/cart");
+                onClick={async () => {
+                  await addToCart();
+                  if (auth.currentUser) navigate("/cart");
                 }}
-                disabled={product.stock === 0}
+                disabled={product.stock === 0 || isAdding}
               >
                 PROCEED TO CHECKOUT
               </button>

@@ -1,167 +1,169 @@
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { useEffect, useState } from "react";
-import { supabase } from "../supabase/supabaseClient";
-import useSupabaseUser from "../hooks/useAuthListener";
-import { toast } from "react-toastify";
+import { User, MapPin, Phone, Trash2, LogOut, Shield } from "lucide-react";
+import Navbar from "../components/Navbar";
 import "../styles/Profile.css";
+
+// 1. Firebase Imports
+import { getAuth, signOut, onAuthStateChanged } from "firebase/auth";
+import { getFirestore, doc, getDoc, setDoc, updateDoc } from "firebase/firestore";
 
 export default function Profile() {
   const navigate = useNavigate();
-  const { user, loading } = useSupabaseUser();
-  const [saving, setSaving] = useState(false);
+  const auth = getAuth();
+  const db = getFirestore();
 
   const [formData, setFormData] = useState({
     firstName: "",
     lastName: "",
-    gender: "",
-    dob: "",
+    email: "",
     mobile: "",
     address: ""
   });
 
-  /* ---------- LOAD PROFILE ---------- */
+  const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
+
+  // 2. Fetch User Data on Load
   useEffect(() => {
-    if (!loading && !user) {
-      navigate("/login");
-      return;
-    }
+    const unsubscribe = onAuthStateChanged(auth, async (user) => {
+      if (user) {
+        const docRef = doc(db, "users", user.uid);
+        const docSnap = await getDoc(docRef);
 
-    if (!user) return;
-
-    const loadProfile = async () => {
-      const { data, error } = await supabase
-        .from("users")
-        .select("*")
-        .eq("id", user.id)
-        .single();
-
-      if (error && error.code !== "PGRST116") {
-        console.error(error);
-        return;
+        if (docSnap.exists()) {
+          setFormData(docSnap.data());
+        } else {
+          // If no doc exists, pre-fill email from Auth
+          setFormData((prev) => ({ ...prev, email: user.email }));
+        }
+        setLoading(false);
+      } else {
+        navigate("/login"); // Redirect if session expires
       }
-
-      if (data) {
-        setFormData({
-          firstName: data.first_name ?? "",
-          lastName: data.last_name ?? "",
-          gender: data.gender ?? "",
-          dob: data.dob ?? "",
-          mobile: data.mobile ?? "",
-          address: data.address ?? ""
-        });
-      }
-    };
-
-    loadProfile();
-  }, [user, loading, navigate]);
-
-  /* ---------- SAVE PROFILE ---------- */
-  const handleSave = async () => {
-    if (!formData.mobile) {
-      return toast.error("Mobile number is required");
-    }
-
-    setSaving(true);
-
-    const { error } = await supabase.from("users").upsert({
-      id: user.id,
-      first_name: formData.firstName,
-      last_name: formData.lastName,
-      gender: formData.gender,
-      dob: formData.dob || null,
-      mobile: formData.mobile,
-      address: formData.address,
-      updated_at: new Date()
     });
 
-    setSaving(false);
+    return () => unsubscribe();
+  }, [auth, db, navigate]);
 
-    if (error) {
-      toast.error("Failed to save profile");
-      console.error(error);
-    } else {
-      toast.success("Profile updated successfully");
+  // 3. Save/Update Logic
+  const handleSave = async () => {
+    if (!auth.currentUser) return;
+    
+    setSaving(true);
+    try {
+      const userRef = doc(db, "users", auth.currentUser.uid);
+      
+      // setDoc with { merge: true } creates the doc if it doesn't exist
+      await setDoc(userRef, formData, { merge: true });
+      
+      alert("LOCAL ARCHIVE UPDATED");
+    } catch (error) {
+      console.error("Error updating profile:", error);
+      alert("FAILED TO UPDATE ARCHIVE");
+    } finally {
+      setSaving(false);
     }
   };
 
-  /* ---------- LOGOUT ---------- */
+  // 4. Logout Logic
   const handleLogout = async () => {
-    await supabase.auth.signOut();
-    navigate("/");
+    try {
+      await signOut(auth);
+      navigate("/");
+    } catch (error) {
+      console.error("Logout Error:", error);
+    }
   };
 
-  /* ---------- DELETE ACCOUNT (SAFE WAY) ---------- */
-  const handleDeleteAccount = async () => {
-    if (!window.confirm("This will permanently delete your data. Continue?"))
-      return;
-
-    // Delete profile row
-    await supabase.from("users").delete().eq("id", user.id);
-
-    // Log out (auth deletion requires Edge Function)
-    await supabase.auth.signOut();
-
-    toast.success("Account data deleted");
-    navigate("/");
-  };
-
-  if (loading) {
-    return <div className="loading-container">Loading...</div>;
-  }
+  if (loading) return <div className="loading-screen">SYNCING WITH ARCHIVE...</div>;
 
   return (
-    <div className="profile-page">
-      <aside className="profile-sidebar">
-        <h2>{formData.firstName} {formData.lastName}</h2>
-        <p>{user.email}</p>
+    <div className="profile-theme-wrapper">
+      <Navbar />
+      
+      <div className="profile-container">
+        {/* --- SIDEBAR --- */}
+        <aside className="profile-sidebar">
+          <div className="profile-id-card">
+            <div className="id-avatar">
+              <Shield size={40} className="accent-icon" />
+            </div>
+            <span className="stealth-tag">// AUTHENTICATED</span>
+            <h2 className="user-full-name">{formData.firstName || "OPERATIVE"} {formData.lastName || "N/A"}</h2>
+            <p className="user-email-static">{formData.email}</p>
+          </div>
 
-        <button onClick={handleDeleteAccount} className="danger">
-          Delete Account
-        </button>
-        <button onClick={handleLogout}>Logout</button>
-      </aside>
+          <nav className="profile-nav">
+            <button className="nav-item active">ARCHIVE PROFILE</button>
+            <button className="nav-item">ORDER HISTORY</button>
+            <button className="nav-item">SECURITY</button>
+          </nav>
 
-      <main className="profile-content">
-        <h1>Edit Profile</h1>
+          <div className="sidebar-actions">
+            <button className="logout-btn" onClick={handleLogout}>
+              <LogOut size={16} /> TERMINATE SESSION
+            </button>
+            <button className="delete-btn">
+              <Trash2 size={16} /> SCRUB IDENTITY
+            </button>
+          </div>
+        </aside>
 
-        <input value={user.email} disabled />
+        {/* --- MAIN CONTENT --- */}
+        <main className="profile-content">
+          <header className="content-header">
+            <h1 className="content-title">EDIT IDENTITY</h1>
+            <p className="content-subtitle">Modify your archive credentials.</p>
+          </header>
 
-        <input
-          placeholder="First Name"
-          value={formData.firstName}
-          onChange={(e) =>
-            setFormData({ ...formData, firstName: e.target.value })
-          }
-        />
+          <div className="stealth-form">
+            <div className="form-row">
+              <div className="input-group">
+                <label>FIRST NAME</label>
+                <input
+                  value={formData.firstName}
+                  onChange={(e) => setFormData({ ...formData, firstName: e.target.value.toUpperCase() })}
+                />
+              </div>
+              <div className="input-group">
+                <label>LAST NAME</label>
+                <input
+                  value={formData.lastName}
+                  onChange={(e) => setFormData({ ...formData, lastName: e.target.value.toUpperCase() })}
+                />
+              </div>
+            </div>
 
-        <input
-          placeholder="Last Name"
-          value={formData.lastName}
-          onChange={(e) =>
-            setFormData({ ...formData, lastName: e.target.value })
-          }
-        />
+            <div className="input-group">
+              <label>MOBILE CONTACT</label>
+              <div className="input-with-icon">
+                <Phone size={14} />
+                <input
+                  value={formData.mobile}
+                  onChange={(e) => setFormData({ ...formData, mobile: e.target.value })}
+                />
+              </div>
+            </div>
 
-        <input
-          placeholder="Mobile"
-          value={formData.mobile}
-          onChange={(e) =>
-            setFormData({ ...formData, mobile: e.target.value })
-          }
-        />
+            <div className="input-group">
+              <label>SHIPPING COORDINATES</label>
+              <div className="input-with-icon">
+                <MapPin size={14} />
+                <textarea
+                  rows="3"
+                  value={formData.address}
+                  onChange={(e) => setFormData({ ...formData, address: e.target.value })}
+                />
+              </div>
+            </div>
 
-        <textarea
-          placeholder="Address"
-          value={formData.address}
-          onChange={(e) =>
-            setFormData({ ...formData, address: e.target.value })
-          }
-        />
-
-        <button onClick={handleSave} disabled={saving}>
-          {saving ? "Saving..." : "Save Changes"}
-        </button>
-      </main>
+            <button className="save-btn-stealth" onClick={handleSave} disabled={saving}>
+              {saving ? "UPLOADING..." : "COMMIT CHANGES"}
+            </button>
+          </div>
+        </main>
+      </div>
     </div>
   );
 }

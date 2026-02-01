@@ -1,77 +1,132 @@
-import { useState, useEffect } from "react";
-import { loginUser, googleLogin } from "../services/authService";
-import { useNavigate } from "react-router-dom";
-import { toast } from "react-toastify";
-import useAuthListener from "../hooks/useAuthListener";
+import React, { useState } from "react";
+import Navbar from "../components/Navbar";
+import { Link, useNavigate } from "react-router-dom";
 import "../styles/Auth.css";
 
+// 1. Firebase Imports
+import { 
+  getAuth, 
+  signInWithEmailAndPassword, 
+  GoogleAuthProvider, 
+  signInWithPopup 
+} from "firebase/auth";
+
 export default function Login() {
-  const navigate = useNavigate();
-  const { user, loading: authLoading } = useAuthListener();
-
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
-  const [form, setForm] = useState({ email: "", password: "" });
 
-  useEffect(() => {
-    if (!authLoading && user) {
-      navigate("/");
-    }
-  }, [user, authLoading, navigate]);
+  const navigate = useNavigate();
+  const auth = getAuth();
+  const googleProvider = new GoogleAuthProvider();
 
-  const handleChange = (e) =>
-    setForm({ ...form, [e.target.name]: e.target.value });
-
-  const handleLogin = async () => {
-    if (!form.email || !form.password) {
-      return toast.error("Please fill in all fields");
-    }
-
+  // 2. Email/Password Login Logic
+  const handleEmailLogin = async (e) => {
+    e.preventDefault();
     setLoading(true);
+    setError("");
+
     try {
-      await loginUser(form.email, form.password);
-      toast.success("Welcome back!");
-      navigate("/");
+      await signInWithEmailAndPassword(auth, email, password);
+      navigate("/profile"); // Redirect on success
     } catch (err) {
-      toast.error(err.message || "Invalid credentials");
+      setError("INVALID CREDENTIALS. ACCESS DENIED.");
+      console.error(err);
     } finally {
       setLoading(false);
     }
   };
 
-  const handleGoogle = async () => {
+  // 3. Google Login Logic
+  const handleGoogleLogin = async () => {
+    setLoading(true);
+    setError("");
     try {
-      await googleLogin();
-    } catch {
-      toast.error("Google login failed");
+      await signInWithPopup(auth, googleProvider);
+      navigate("/profile");
+    } catch (err) {
+      setError("GOOGLE AUTHENTICATION FAILED.");
+      console.error(err);
+    } finally {
+      setLoading(false);
     }
   };
 
-  if (authLoading) return null;
-
   return (
-    <div className="auth-container">
-      <div className="auth-card">
-        <h2>Welcome Back</h2>
+    <div className="auth-page-wrapper">
+      <Navbar />
 
-        <input
-          name="email"
-          placeholder="Email"
-          onChange={handleChange}
-        />
-        <input
-          name="password"
-          type="password"
-          placeholder="Password"
-          onChange={handleChange}
-        />
+      <div className="auth-container-stealth">
+        <div className="auth-card-glass">
+          <div className="auth-header">
+            <span className="stealth-tag">// ACCESS PORTAL</span>
+            <h2>IDENTIFY YOURSELF</h2>
+            <p className="auth-subtitle">
+              Enter the archive to manage your collection.
+            </p>
+          </div>
 
-        <button onClick={handleLogin} disabled={loading}>
-          {loading ? "Authenticating..." : "Login"}
-        </button>
+          {/* Error Message Display */}
+          {error && <div className="auth-error-msg">{error}</div>}
 
-        <div className="divider-text">OR</div>
+          <form className="auth-form" onSubmit={handleEmailLogin}>
+            <div className="input-group-stealth">
+              <label>EMAIL ADDRESS</label>
+              <input
+                type="email"
+                placeholder="identity@tagturn.com"
+                autoComplete="off"
+                required
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+              />
+            </div>
 
-        <button onClick={handleGoogle}>Continue with Google</button>
+            <div className="input-group-stealth">
+              <label>PASSWORD</label>
+              <input
+                type="password"
+                placeholder="••••••••"
+                required
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+              />
+            </div>
+
+            <button 
+              type="submit" 
+              className="auth-btn-neon" 
+              disabled={loading}
+            >
+              {loading ? "VERIFYING..." : "VERIFY IDENTITY"}
+            </button>
+          </form>
+
+          <div className="auth-divider">
+            <span className="divider-line"></span>
+            <span className="divider-label">OR CONNECT VIA</span>
+            <span className="divider-line"></span>
+          </div>
+
+          <button 
+            className="google-btn-stealth" 
+            onClick={handleGoogleLogin}
+            disabled={loading}
+          >
+            <img
+              src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg"
+              alt="Google"
+            />
+            GOOGLE AUTHENTICATION
+          </button>
+
+          <div className="auth-footer">
+            <p>
+              NEW TO THE ARCHIVE? <Link to="/signup">CREATE IDENTITY</Link>
+            </p>
+          </div>
+        </div>
       </div>
     </div>
   );

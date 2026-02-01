@@ -1,0 +1,10 @@
+.stealth-canvas {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: -1; /* Behind the Navbar and Content */
+  pointer-events: none;
+  background: var(--bg-dark); /* Ensure it blends with #050505 */
+}

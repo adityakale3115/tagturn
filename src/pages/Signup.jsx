@@ -1,79 +1,72 @@
-import { useState, useEffect } from "react";
-import { registerUser, googleLogin } from "../services/authService";
-import { useNavigate } from "react-router-dom";
-import { toast } from "react-toastify";
-import useAuthListener from "../hooks/useAuthListener";
+import Navbar from "../components/Navbar";
 import "../styles/Auth.css";
 
 export default function Signup() {
-  const navigate = useNavigate();
-  const { user, loading: authLoading } = useAuthListener();
-
-  const [loading, setLoading] = useState(false);
-  const [form, setForm] = useState({
-    name: "",
-    email: "",
-    password: ""
-  });
-
-  useEffect(() => {
-    if (!authLoading && user) navigate("/");
-  }, [user, authLoading, navigate]);
-
-  const handleChange = (e) =>
-    setForm({ ...form, [e.target.name]: e.target.value });
-
-  const handleSignup = async () => {
-    const { name, email, password } = form;
-
-    if (!name || !email || !password)
-      return toast.error("Please fill all fields");
-
-    if (password.length < 6)
-      return toast.error("Password must be at least 6 characters");
-
-    setLoading(true);
-    try {
-      await registerUser(email, password, name);
-      toast.success("Account created!");
-      navigate("/");
-    } catch (err) {
-      toast.error(err.message || "Signup failed");
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const handleGoogle = async () => {
-    try {
-      await googleLogin();
-    } catch {
-      toast.error("Google signup failed");
-    }
-  };
-
-  if (authLoading) return null;
-
   return (
-    <div className="auth-container">
-      <div className="auth-card">
-        <h2>Create Account</h2>
+    <div className="auth-page-wrapper">
+      <Navbar />
 
-        <input name="name" placeholder="Full Name" onChange={handleChange} />
-        <input name="email" placeholder="Email" onChange={handleChange} />
-        <input
-          name="password"
-          type="password"
-          placeholder="Password"
-          onChange={handleChange}
-        />
+      <div className="auth-container-stealth">
+        <div className="auth-card-glass">
+          <div className="auth-header">
+            <span className="stealth-tag">// NEW IDENTITY</span>
+            <h2>JOIN THE ARCHIVE</h2>
+            <p className="auth-subtitle">
+              Establish your credentials to access exclusive drops.
+            </p>
+          </div>
 
-        <button onClick={handleSignup} disabled={loading}>
-          {loading ? "Creating..." : "Sign Up"}
-        </button>
+          <div className="auth-form">
+            <div className="input-group-stealth">
+              <label>FULL NAME</label>
+              <input
+                placeholder="OPERATIVE NAME"
+                autoComplete="off"
+              />
+            </div>
 
-        <div className="divider-text">OR</div>
-        <button onClick={handleGoogle}>Continue with Google</button>
+            <div className="input-group-stealth">
+              <label>EMAIL ADDRESS</label>
+              <input
+                type="email"
+                placeholder="identity@tagturn.com"
+              />
+            </div>
+
+            <div className="input-group-stealth">
+              <label>PASSWORD</label>
+              <input
+                type="password"
+                placeholder="••••••••"
+              />
+            </div>
+
+            <button className="auth-btn-neon" disabled>
+              CREATE IDENTITY
+            </button>
+          </div>
+
+          <div className="auth-divider">
+            <span className="divider-line"></span>
+            <span className="divider-label">OR CONNECT VIA</span>
+            <span className="divider-line"></span>
+          </div>
+
+          <button className="google-btn-stealth" disabled>
+            <img
+              src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg"
+              alt="Google"
+            />
+            GOOGLE AUTHENTICATION
+          </button>
+
+          <div className="auth-footer">
+            <p>
+              ALREADY HAVE AN IDENTITY?{" "}
+              <span style={{ opacity: 0.6 }}>ACCESS PORTAL</span>
+            </p>
+          </div>
+        </div>
       </div>
     </div>
   );
