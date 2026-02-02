@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import "./../styles/Navbar.css";
 import { FiUser, FiHeart, FiShoppingCart, FiMenu, FiX, FiSearch } from "react-icons/fi";
-import { useNavigate } from "react-router-dom"; // Removed useLocation
+import { useNavigate } from "react-router-dom";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 import { useCart } from "../context/CartContext";
 import { db } from "../firebase/firebaseConfig"; 
@@ -11,7 +11,6 @@ export default function DarkNavbar() {
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const [user, setUser] = useState(null);
-  // Removed loading state since it wasn't being used for conditional rendering here
   
   const [searchQuery, setSearchQuery] = useState("");
   const [allProducts, setAllProducts] = useState([]); 
@@ -66,6 +65,7 @@ export default function DarkNavbar() {
       setShowSuggestions(false);
       navigate(`/search?q=${encodeURIComponent(searchQuery.trim())}`);
       setSearchQuery("");
+      setMenuOpen(false); // Close mobile menu on search
     }
   };
 
@@ -73,10 +73,12 @@ export default function DarkNavbar() {
     setShowSuggestions(false);
     setSearchQuery("");
     navigate(`/product/${product.id}`);
+    setMenuOpen(false);
   };
 
   const handleNav = (path) => {
-    setMenuOpen(false);
+    setMenuOpen(false); // Always close menu on navigation
+
     if (path === "/collections") {
       if (window.location.pathname === "/") {
         const element = document.getElementById("collections");
@@ -99,12 +101,21 @@ export default function DarkNavbar() {
         {menuOpen ? <FiX size={24} /> : <FiMenu size={24} />}
       </div>
 
-      <div className="nav-left" onClick={() => navigate("/")}>TAGTURN</div>
+      <div className="nav-left" onClick={() => handleNav("/")}>TAGTURN</div>
 
       <div className={`nav-center ${menuOpen ? "active" : ""}`}>
         <span className="nav-link" onClick={() => handleNav("/new")}>NEW DROPS</span>
         <span className="nav-link" onClick={() => handleNav("/collections")}>COLLECTIONS</span>
         <span className="nav-link" onClick={() => handleNav("/lookbook")}>LOOKBOOK</span>
+        
+        {/* MOBILE ONLY ICONS */}
+        <div className="mobile-only-icons">
+          <FiHeart className="nav-icon" onClick={() => handleNav("/wishlist")} />
+          <FiUser 
+            className="nav-icon" 
+            onClick={() => user ? handleNav("/profile") : handleNav("/login")} 
+          />
+        </div>
       </div>
 
       <div className="nav-right">
@@ -116,7 +127,7 @@ export default function DarkNavbar() {
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             onKeyDown={handleSearch}
-            onBlur={() => setTimeout(() => setShowSuggestions(false), 200)}
+            onBlur={() => setTimeout(() => setShowSuggestions(false), 200)} 
             onFocus={() => searchQuery && setShowSuggestions(true)}
           />
 
@@ -139,12 +150,17 @@ export default function DarkNavbar() {
           )}
         </div>
 
-        <FiHeart className="nav-icon hide-mobile" />
+        <FiHeart className="nav-icon hide-mobile" onClick={() => navigate("/wishlist")} />
+        
         <div className="cart-wrapper" onClick={() => navigate("/cart")}>
           <FiShoppingCart className="nav-icon" />
           {cartItems.length > 0 && <span className="badge">{cartItems.length}</span>}
         </div>
-        <FiUser className="nav-icon hide-mobile" onClick={() => user ? navigate("/profile") : navigate("/login")} />
+        
+        <FiUser 
+          className="nav-icon hide-mobile" 
+          onClick={() => user ? navigate("/profile") : navigate("/login")} 
+        />
       </div>
     </nav>
   );

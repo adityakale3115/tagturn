@@ -222,3 +222,37 @@
   font-size: 0.7rem;
   color: #888;
 }
+
+/* Container for mobile icons */
+.mobile-only-icons {
+  display: none; /* Hidden on desktop */
+  gap: 40px;
+  margin-top: 30px;
+  padding-top: 20px;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  justify-content: center;
+  width: 100%;
+}
+
+/* Show only when mobile menu is active */
+@media (max-width: 768px) {
+  .nav-center.active .mobile-only-icons {
+    display: flex;
+  }
+  
+  /* Hide desktop-only elements */
+  .hide-mobile {
+    display: none !important;
+  }
+}
+
+.nav-icon {
+  font-size: 1.5rem;
+  cursor: pointer;
+  color: white;
+  transition: transform 0.2s ease;
+}
+
+.nav-icon:active {
+  transform: scale(0.9);
+}
