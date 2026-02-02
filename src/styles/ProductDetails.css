@@ -237,3 +237,61 @@
   .product-layout-grid { grid-template-columns: 1fr; gap: 60px; }
   .related-grid-stealth { grid-template-columns: repeat(2, 1fr); }
 }
+
+.stealth-preloader {
+  position: fixed;
+  inset: 0;
+  background-color: #050505;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10000;
+}
+
+.preloader-box {
+  width: 300px;
+}
+
+.boot-tag {
+  color: #ff4757;
+  font-family: monospace;
+  font-size: 10px;
+  letter-spacing: 2px;
+}
+
+.boot-logo {
+  font-size: 2.5rem;
+  font-weight: 900;
+  color: #fff;
+  margin: 10px 0;
+}
+
+.boot-bar-bg {
+  width: 100%;
+  height: 2px;
+  background: rgba(255, 255, 255, 0.1);
+  margin: 20px 0;
+}
+
+.boot-bar-fill {
+  height: 100%;
+  background: #ff4757;
+  transition: width 0.1s ease-out;
+}
+
+.boot-stats {
+  display: flex;
+  justify-content: space-between;
+  font-family: monospace;
+  font-size: 10px;
+  color: #555;
+}
+
+.fade-in {
+  animation: fadeInEffect 0.8s ease-out;
+}
+
+@keyframes fadeInEffect {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
