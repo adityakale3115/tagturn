@@ -133,7 +133,7 @@ export default function ProductDetails() {
   if (loading) return (
     <div className="stealth-preloader">
       <div className="preloader-box">
-        <span className="boot-tag">// DECRYPTING_ARTICLE: {id?.slice(0, 8)}</span>
+        <span className="boot-tag">DECRYPTING_ARTICLE: {id?.slice(0, 8)}</span>
         <h2 className="boot-logo">TAGTURN</h2>
         <div className="boot-bar-bg">
           <div className="boot-bar-fill" style={{ width: `${percent}%` }}></div>
@@ -150,7 +150,7 @@ export default function ProductDetails() {
     <div className="stealth-page-wrapper">
       <Navbar />
       <div className="stealth-error">
-        <h2>404 // ARTICLE_NOT_FOUND</h2>
+        <h2>404 ARTICLE_NOT_FOUND</h2>
         <button className="neon-btn" onClick={() => navigate("/")}>RETURN_TO_ARCHIVE</button>
       </div>
     </div>
@@ -161,7 +161,7 @@ export default function ProductDetails() {
       <Navbar />
       <div className="product-main-container">
         <button className="back-link" onClick={() => navigate(-1)}>
-          <ArrowLeft size={14} /> <span>// BACK_TO_COLLECTION</span>
+          <ArrowLeft size={14} /> <span>BACK_TO_COLLECTION</span>
         </button>
 
         <div className="product-layout-grid">
