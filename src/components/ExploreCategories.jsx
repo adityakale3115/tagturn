@@ -52,7 +52,7 @@ export default function ExploreCategories() {
   };
 
   return (
-    <section className="explore-section">
+    <section id="collections" className="explore-section">
       <div className="explore-header">
         <span className="section-tag">{`// SELECT ARCHIVE`}</span>
         <h2 className="section-title">Collections</h2>
