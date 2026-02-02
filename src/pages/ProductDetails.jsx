@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { doc, getDoc, collection, query, where, limit, getDocs, setDoc, updateDoc, arrayUnion, serverTimestamp } from "firebase/firestore";
 import { getAuth } from "firebase/auth";
@@ -14,7 +14,7 @@ export default function ProductDetails() {
   const auth = getAuth();
 
   const [product, setProduct] = useState(null);
-  const [relatedProducts, setRelatedProducts] = useState([]);
+  const [relatedProducts, setRelatedProducts] = useState([]); 
   const [quantity, setQuantity] = useState(1);
   const [selectedSize, setSelectedSize] = useState("");
   const [activeImage, setActiveImage] = useState("");
@@ -22,7 +22,6 @@ export default function ProductDetails() {
   const [percent, setPercent] = useState(0);
   const [isAdding, setIsAdding] = useState(false);
 
-  // --- PRELOADER LOGIC ---
   useEffect(() => {
     let interval;
     if (loading) {
@@ -39,7 +38,7 @@ export default function ProductDetails() {
     return () => clearInterval(interval);
   }, [loading]);
 
-  // --- DATA FETCHING ---
+ 
   useEffect(() => {
     const fetchFullProductData = async () => {
       window.scrollTo(0, 0);
@@ -181,7 +180,7 @@ export default function ProductDetails() {
 
           <div className="info-column">
             <div className="brand-header">
-              <span className="collection-label">TAGTURN // AUTHENTIC_WEAR</span>
+              <span className="collection-label">TAGTURN - AUTHENTIC_WEAR</span>
               <h1 className="product-name-title">{product.name}</h1>
               <p className="vendor-meta">ARTICLE_ID: {id?.slice(0, 12)}</p>
             </div>
@@ -226,6 +225,24 @@ export default function ProductDetails() {
             </div>
           </div>
         </div>
+
+        {/* RELATED PRODUCTS SECTION - using the relatedProducts variable now */}
+        {relatedProducts.length > 0 && (
+          <div className="related-section">
+            <h2 className="related-title">COMPLETE_THE_LOOK</h2>
+            <div className="related-grid">
+              {relatedProducts.map(item => (
+                <div key={item.id} className="related-card" onClick={() => navigate(`/product/${item.id}`)}>
+                   <img src={item.images?.[0]} alt={item.name} />
+                   <div className="related-info">
+                     <p>{item.name}</p>
+                     <span>₹{item.price}</span>
+                   </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );
