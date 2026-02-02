@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useSearchParams, useNavigate } from "react-router-dom";
-import { db } from "../firebase/firebaseConfig"; // Ensure this points to your firebase init file
-import { collection, getDocs, query, where } from "firebase/firestore";
+import { db } from "../firebase/firebaseConfig"; 
+import { collection, getDocs } from "firebase/firestore"; // Removed query and where
 
 export default function SearchPage() {
   const [searchParams] = useSearchParams();
@@ -23,8 +23,6 @@ export default function SearchPage() {
           ...doc.data()
         }));
 
-        // Firestore doesn't support easy case-insensitive partial matching 
-        // without third-party tools, so we filter the results client-side
         const filtered = allProducts.filter(item => 
           item.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
           item.category?.toLowerCase().includes(searchTerm.toLowerCase())
@@ -51,7 +49,6 @@ export default function SearchPage() {
         <div style={styles.grid}>
           {products.map((product) => (
             <div key={product.id} style={styles.card} onClick={() => navigate(`/product/${product.id}`)}>
-              {/* Using index 0 of your 'images' array from Firestore */}
               <img 
                 src={product.images && product.images[0]} 
                 alt={product.name} 
@@ -60,7 +57,6 @@ export default function SearchPage() {
               <div style={styles.info}>
                 <h3 style={styles.prodName}>{product.name}</h3>
                 <p style={styles.category}>{product.category}</p>
-                {/* Add price field here if you have one in Firestore */}
               </div>
             </div>
           ))}
