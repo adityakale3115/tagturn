@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import "./../styles/Navbar.css";
 import { FiUser, FiHeart, FiShoppingCart, FiMenu, FiX, FiSearch } from "react-icons/fi";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 import { useCart } from "../context/CartContext";
 import { db } from "../firebase/firebaseConfig"; 
@@ -18,10 +18,10 @@ export default function EditorialNavbar() {
   const [showSuggestions, setShowSuggestions] = useState(false);
 
   const navigate = useNavigate();
+  const location = useLocation();
   const { cartItems } = useCart();
   const auth = getAuth();
 
-  // --- Backend: Fetch Products for Search ---
   useEffect(() => {
     const fetchProducts = async () => {
       try {
@@ -35,7 +35,6 @@ export default function EditorialNavbar() {
     fetchProducts();
   }, []);
 
-  // --- Backend: Auth Listener ---
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
       setUser(currentUser);
@@ -43,7 +42,6 @@ export default function EditorialNavbar() {
     return () => unsubscribe();
   }, [auth]);
 
-  // --- Logic: Search Suggestions ---
   useEffect(() => {
     if (searchQuery.trim().length > 0) {
       const filtered = allProducts.filter(item =>
@@ -57,7 +55,6 @@ export default function EditorialNavbar() {
     }
   }, [searchQuery, allProducts]);
 
-  // --- Logic: Scroll Effect ---
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 50);
     window.addEventListener("scroll", handleScroll);
@@ -75,7 +72,7 @@ export default function EditorialNavbar() {
 
   const handleNav = (path) => {
     setMenuOpen(false);
-    if (path === "/collections" && window.location.pathname === "/") {
+    if (path === "/collections" && location.pathname === "/") {
       document.getElementById("collections")?.scrollIntoView({ behavior: "smooth" });
     } else {
       navigate(path);
@@ -83,20 +80,22 @@ export default function EditorialNavbar() {
   };
 
   return (
-    <nav className={`navbar ${scrolled ? "scrolled" : ""} ${menuOpen ? "menu-open" : ""}`}>
-      {/* HAMBURGER: Only visible on mobile via CSS */}
+    <nav className={`navbar ${scrolled ? "scrolled" : ""} ${menuOpen ? "menu-active" : ""}`}>
+      {/* TOGGLE BUTTON: Stays on top of everything on mobile */}
       <div className="menu-toggle" onClick={() => setMenuOpen(!menuOpen)}>
-        {menuOpen ? <FiX size={24} /> : <FiMenu size={24} />}
+        {menuOpen ? <FiX size={26} /> : <FiMenu size={26} />}
       </div>
 
-      <div className="nav-left" onClick={() => handleNav("/")}>TAGTURN</div>
+      <div className="nav-left" onClick={() => handleNav("/")}>
+        TAGTURN
+      </div>
 
       <div className={`nav-center ${menuOpen ? "active" : ""}`}>
         <span className="nav-link" onClick={() => handleNav("/new")}>NEW DROPS</span>
         <span className="nav-link" onClick={() => handleNav("/collections")}>COLLECTIONS</span>
         <span className="nav-link" onClick={() => handleNav("/lookbook")}>LOOKBOOK</span>
         
-        {/* MOBILE ICONS: Hidden on Desktop */}
+        {/* MOBILE ICONS: Only visible when mobile menu is open via CSS */}
         <div className="mobile-only-icons">
           <FiHeart className="nav-icon" onClick={() => handleNav("/wishlist")} />
           <FiUser className="nav-icon" onClick={() => user ? handleNav("/profile") : handleNav("/login")} />
@@ -104,12 +103,12 @@ export default function EditorialNavbar() {
       </div>
 
       <div className="nav-right">
-        {/* SEARCH: Hidden on Mobile */}
+        {/* DESKTOP SEARCH */}
         <div className="search-container hide-mobile">
           <FiSearch size={16} onClick={handleSearch} style={{ cursor: "pointer" }} />
           <input 
             type="text" 
-            placeholder="Search..." 
+            placeholder="Search Archive..." 
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             onKeyDown={handleSearch}

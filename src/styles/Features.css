@@ -1,7 +1,7 @@
 .brand-intro-section {
   padding: 80px 8%;
-  background-color: var(--bg-main); /* #DAE5C3 Sage */
-  color: var(--text-primary); /* #670626 Black Cherry */
+  background-color: var(--bg-main); /* Follows index.css */
+  color: var(--text-primary);       /* Follows index.css */
 }
 
 .bento-grid {
@@ -15,8 +15,9 @@
     "long long long long";
 }
 
+/* --- BASE BENTO ITEM --- */
 .bento-item {
-  background: var(--surface); /* Slightly darker sage #D2DEC0 */
+  background: var(--surface); /* Follows index.css surface color */
   border: 1px solid var(--border);
   padding: 40px;
   position: relative;
@@ -27,13 +28,14 @@
 .bento-item:hover {
   border-color: var(--text-primary);
   transform: translateY(-8px);
-  box-shadow: 0 20px 40px rgba(103, 6, 38, 0.1);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.05);
 }
 
 /* --- MAIN FEATURE --- */
 .main-feature {
   grid-area: main;
-  background: #cbd9b0; /* Deeper sage tone */
+  /* Creates a subtle tint based on your primary text color */
+  background: color-mix(in srgb, var(--surface), var(--text-primary) 8%);
 }
 
 .stealth-tag {
@@ -66,6 +68,7 @@
   line-height: 1.6;
 }
 
+/* --- BUTTONS --- */
 .brand-fill-btn {
   background: var(--text-primary);
   color: var(--bg-main);
@@ -76,7 +79,6 @@
   letter-spacing: 2px;
   text-transform: uppercase;
   cursor: pointer;
-  transition: 0.3s;
 }
 
 .brand-outline-btn {
@@ -95,40 +97,28 @@
   position: absolute;
   right: -30px;
   bottom: -30px;
-  color: rgba(103, 6, 38, 0.05);
+  color: var(--text-primary);
+  opacity: 0.04; /* Very subtle so it works on any color */
   pointer-events: none;
 }
 
 /* --- VERIFIED BOX --- */
 .verified {
   grid-area: verif;
-  background: #dae5c3;
+  background: var(--surface);
 }
 
 .verify-tag {
   font-size: 10px;
   letter-spacing: 2px;
   font-weight: 800;
-  color: var(--text-primary);
 }
 
-.verified h3 {
-  font-family: 'Cormorant Garamond', serif;
-  font-size: 20px;
-  font-weight: 700;
-}
-
-/* --- ALERT BOX (Black Cherry Background) --- */
+/* --- ALERT BOX (The Accent Box) --- */
 .alert {
   grid-area: alert;
-  background: var(--text-primary); /* Dark Burgundy #670626 */
-  color: var(--bg-main); /* Sage text #DAE5C3 */
-}
-
-.alert-label {
-  font-size: 11px;
-  letter-spacing: 2px;
-  opacity: 0.8;
+  background: var(--text-primary); /* Dark in light theme / Light in dark theme */
+  color: var(--bg-main);           /* Inverts correctly */
 }
 
 .alert-text {
@@ -137,34 +127,21 @@
   margin-top: 20px;
 }
 
-.corner-arrow {
-  position: absolute;
-  bottom: 20px;
-  right: 20px;
-  color: var(--bg-main);
-  opacity: 0.3;
-}
-
 /* --- LONG BOX --- */
 .long-box {
   grid-area: long;
-}
-
-.revolution-text h3 {
-  font-family: 'Cormorant Garamond', serif;
-  font-size: clamp(2rem, 3vw, 2.5rem);
-  font-weight: 700;
+  background: var(--surface);
 }
 
 .hashtag-row span {
-  background: rgba(103, 6, 38, 0.05);
+  background: rgba(0, 0, 0, 0.03); /* Subtle contrast */
   color: var(--text-primary);
   padding: 6px 15px;
   font-size: 10px;
   letter-spacing: 1px;
 }
 
-/* Responsive stays the same as your structure was already solid */
+/* RESPONSIVE */
 @media (max-width: 1200px) {
   .bento-grid {
     grid-template-areas: 
@@ -179,5 +156,4 @@
     grid-template-columns: 1fr;
     grid-template-areas: "main" "verif" "alert" "long";
   }
-  .long-content { flex-direction: column; text-align: center; gap: 30px; }
 }

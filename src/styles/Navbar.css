@@ -1,4 +1,4 @@
-/* --- Root Styles --- */
+/* --- Core Navbar --- */
 .navbar {
   position: fixed;
   top: 0;
@@ -8,18 +8,18 @@
   align-items: center;
   justify-content: space-between;
   padding: 0 40px;
-  background: rgba(218, 229, 195, 0.9);
+  background: color-mix(in srgb, var(--bg-main), transparent 10%);
   backdrop-filter: blur(15px);
   -webkit-backdrop-filter: blur(15px);
-  border-bottom: 1px solid rgba(103, 6, 38, 0.08);
+  border-bottom: 1px solid var(--border);
   z-index: 2000;
-  transition: all 0.4s ease;
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .navbar.scrolled {
   height: 65px;
-  background: #dae5c3;
-  box-shadow: 0 10px 30px rgba(103, 6, 38, 0.05);
+  background: var(--bg-main);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
 }
 
 .nav-left {
@@ -27,7 +27,7 @@
   font-weight: 700;
   font-size: 26px;
   letter-spacing: 4px;
-  color: #670626;
+  color: var(--text-primary);
   cursor: pointer;
 }
 
@@ -40,13 +40,13 @@
   font-size: 11px;
   font-weight: 600;
   letter-spacing: 2px;
-  color: rgba(103, 6, 38, 0.7);
+  color: var(--text-secondary);
   text-transform: uppercase;
   transition: 0.3s;
   cursor: pointer;
 }
 
-.nav-link:hover { color: #670626; }
+.nav-link:hover { color: var(--text-primary); }
 
 .nav-right {
   display: flex;
@@ -54,63 +54,64 @@
   gap: 20px;
 }
 
-/* --- Search & Icons --- */
-.search-container {
-  display: flex;
-  align-items: center;
-  background: rgba(103, 6, 38, 0.04);
-  padding: 6px 12px;
-  border-radius: 2px;
-  border: 1px solid rgba(103, 6, 38, 0.1);
-  position: relative;
-}
-
-.search-container input {
-  background: none;
-  border: none;
-  color: #670626;
-  margin-left: 8px;
-  font-size: 12px;
-  outline: none;
-  width: 120px;
-}
-
 .nav-icon {
-  font-size: 18px;
-  color: #670626;
+  font-size: 20px;
+  color: var(--text-primary);
   cursor: pointer;
-  transition: 0.2s;
 }
 
 .badge {
   position: absolute;
   top: -8px;
   right: -8px;
-  background: #670626;
-  color: #dae5c3;
+  background: var(--text-primary);
+  color: var(--bg-main);
   font-size: 9px;
-  width: 16px;
-  height: 16px;
+  width: 17px;
+  height: 17px;
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
+  font-weight: 800;
 }
 
-/* --- RESPONSIVE LOGIC --- */
+/* --- Search Container --- */
+.search-container {
+  display: flex;
+  align-items: center;
+  background: var(--accent-soft);
+  padding: 6px 12px;
+  border-radius: 2px;
+  border: 1px solid var(--border);
+  position: relative;
+}
+
+.search-container input {
+  background: none;
+  border: none;
+  color: var(--text-primary);
+  margin-left: 8px;
+  font-size: 12px;
+  outline: none;
+  width: 140px;
+}
+
+/* --- RESPONSIVE / MOBILE ONLY --- */
 .menu-toggle {
-  display: none;
-  color: #670626;
+  display: none; /* Hidden on desktop */
+  color: var(--text-primary);
+  z-index: 2100; /* Stays above the mobile menu */
+  position: relative;
   cursor: pointer;
-  z-index: 2010; /* Higher than nav-center */
-  position: relative; /* Required for z-index */
 }
 
-.mobile-only-icons { display: none; }
+.mobile-only-icons {
+  display: none; /* Hidden on desktop */
+}
 
 @media (max-width: 1024px) {
   .navbar { padding: 0 20px; }
-  
   .menu-toggle { display: block; order: 1; }
   
   .nav-left { 
@@ -121,7 +122,6 @@
   }
   
   .nav-right { order: 3; }
-  
   .hide-mobile { display: none !important; }
 
   .nav-center {
@@ -130,50 +130,53 @@
     left: -100%;
     width: 100%;
     height: 100vh;
-    background: #dae5c3;
+    background: var(--bg-main);
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    gap: 35px;
+    gap: 40px;
     transition: 0.5s cubic-bezier(0.77, 0, 0.175, 1);
-    z-index: 2005; /* Lower than menu-toggle */
+    z-index: 2050;
   }
 
   .nav-center.active { left: 0; }
 
   .nav-link {
-    font-size: 24px;
+    font-size: 28px;
     font-family: 'Cormorant Garamond', serif;
-    color: #670626;
+    color: var(--text-primary);
+    letter-spacing: 4px;
   }
 
+  /* Show these only on mobile when menu is active */
   .mobile-only-icons {
     display: flex;
     gap: 40px;
     margin-top: 30px;
     padding-top: 20px;
-    border-top: 1px solid rgba(103, 6, 38, 0.1);
+    border-top: 1px solid var(--border);
   }
 }
 
-/* --- Search Suggestions --- */
+/* --- Suggestions Dropdown --- */
 .suggestions-dropdown {
   position: absolute;
   top: 100%;
   left: 0;
   width: 250px;
-  background: #f4f8ec;
-  border: 1px solid rgba(103, 6, 38, 0.1);
-  box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  box-shadow: 0 10px 25px rgba(0,0,0,0.1);
   margin-top: 5px;
   z-index: 1000;
 }
+
 .suggestion-item {
   display: flex;
   padding: 10px;
   cursor: pointer;
-  border-bottom: 1px solid rgba(103, 6, 38, 0.05);
+  border-bottom: 1px solid var(--border);
 }
-.suggestion-img { width: 40px; height: 40px; object-fit: cover; margin-right: 10px; }
-.suggestion-name { font-size: 12px; color: #670626; display: block; }
-.suggestion-cat { font-size: 10px; color: rgba(103, 6, 38, 0.6); }
+
+.suggestion-name { font-size: 12px; color: var(--text-primary); }
+.suggestion-cat { font-size: 10px; color: var(--text-secondary); }

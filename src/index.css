@@ -1,18 +1,13 @@
 @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600;700&family=Inter:wght@300;400;600;900&display=swap');
 
 :root {
-  /* Brand Colors */
-  --bg-main: #dae5c3;       /* Sage Background */
-  --text-primary: #670626;  /* Black Cherry Text */
-  
-  /* UI Depth & Accents */
-  --surface: #d2dec0;       /* Slightly deeper sage for cards */
-  --accent-soft: rgba(103, 6, 38, 0.05); 
-  --text-secondary: rgba(103, 6, 38, 0.7); /* Muted burgundy */
-  
-  /* Refined Glass - Light version */
-  --glass: rgba(218, 229, 195, 0.7);
-  --border: rgba(103, 6, 38, 0.12);
+  --bg-main: #f7f1ef;        /* Faint Warm Tint */
+  --text-primary: #800020;   /* Rich Wine Red */
+  --surface: #ede3e0;       /* Muted Clay */
+  --accent-soft: rgba(128, 0, 32, 0.05);
+  --text-secondary: rgba(128, 0, 32, 0.65);
+  --glass: rgba(247, 241, 239, 0.8);
+  --border: rgba(128, 0, 32, 0.1);
 }
 
 * {
