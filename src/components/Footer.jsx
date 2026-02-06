@@ -1,12 +1,21 @@
-import { Facebook, Instagram, Youtube, Twitter, Package, RefreshCw, ArrowRight } from "lucide-react";
+import React from 'react';
+import { Facebook, Instagram, Youtube, Twitter, ArrowRight } from "lucide-react";
 import "../styles/Footer.css";
 
 export default function Footer() {
   const sections = [
-    { title: "Shop", items: ["Starwars", "Disney", "Marvel", "Harry Potter", "Deadpool", "DC Comics"] },
-    { title: "Help", items: ["Contact Us", "Track Order", "Returns", "FAQs", "My Account"] },
-    { title: "Company", items: ["About Us", "Investors", "Careers", "Gift Vouchers", "Community"] },
-    { title: "Legal", items: ["T&C", "Privacy Policy", "Sitemap", "Get Notified", "Blogs"] }
+    {
+      title: "Shop",
+      items: ["New Drops", "Collections", "Accessories", "Lookbook"]
+    },
+    {
+      title: "Support",
+      items: ["Order Tracking", "Shipping Policy", "Returns", "Contact Us"]
+    },
+    {
+      title: "Company",
+      items: ["About TagTurn", "Sustainability", "Careers", "Archive Ethos"]
+    }
   ];
 
   return (
@@ -17,12 +26,12 @@ export default function Footer() {
         <div className="footer-top">
           <div className="brand-side">
             <h2 className="footer-logo">TAGTURN</h2>
-            <p className="brand-tagline">Redefining urban elegance through premium streetwear.</p>
+            <p className="brand-tagline">Curating high-end archive streetwear for the modern silhouette.</p>
           </div>
           <div className="newsletter-side">
             <p className="newsletter-label">Stay in the loop</p>
             <div className="subscribe-box">
-              <input type="email" placeholder="Enter your email" />
+              <input type="email" placeholder="Email Address" />
               <button><ArrowRight size={18} /></button>
             </div>
           </div>
@@ -36,63 +45,25 @@ export default function Footer() {
               <ul className="col-links">
                 {sec.items.map((item, i) => (
                   <li key={i}>
-                    <a href="/" onClick={(e) => e.preventDefault()}>
-                      {item}
-                    </a>
+                    <a href="/" onClick={(e) => e.preventDefault()}>{item}</a>
                   </li>
                 ))}
               </ul>
             </div>
           ))}
-          
-          <div className="footer-col stores">
-            <h4 className="col-title">Store Locator</h4>
-            <ul className="col-links">
-              <li>Mumbai</li>
-              <li>Pune</li>
-              <li>Bangalore</li>
-              <li className="view-more-link">View All Stores →</li>
-            </ul>
-          </div>
         </div>
 
-        {/* Features Bar */}
-        <div className="footer-features-bar">
-          <div className="feat-item">
-            <Package size={18} className="feat-icon" />
-            <span>COD AVAILABLE</span>
-          </div>
-          <div className="feat-item">
-            <RefreshCw size={18} className="feat-icon" />
-            <span>30 DAYS RETURNS</span>
-          </div>
-        </div>
-
-        {/* Bottom: Apps & Socials */}
+        {/* Bottom: Socials & Copyright */}
         <div className="footer-bottom">
-          <div className="apps">
-            <img
-              src="https://upload.wikimedia.org/wikipedia/commons/7/78/Google_Play_Store_badge_EN.svg"
-              alt="Play Store"
-            />
-            <img
-              src="https://upload.wikimedia.org/wikipedia/commons/3/3c/Download_on_the_App_Store_Badge.svg"
-              alt="App Store"
-            />
-          </div>
-
           <div className="socials">
             <a href="/" onClick={(e) => e.preventDefault()}><Facebook size={18} /></a>
-            <a href="https://www.instagram.com/tagturn.in"><Instagram size={18} /></a>
+            <a href="https://www.instagram.com/tagturn.in" target="_blank" rel="noreferrer"><Instagram size={18} /></a>
             <a href="/" onClick={(e) => e.preventDefault()}><Youtube size={18} /></a>
             <a href="/" onClick={(e) => e.preventDefault()}><Twitter size={18} /></a>
           </div>
+          <p className="copyright">© 2026 TAGTURN ARCHIVE. ALL RIGHTS RESERVED.</p>
         </div>
-
-        <div className="copyright-bar">
-          <span>© {new Date().getFullYear()} TAGTURN.IN</span>
-          <span>CRAFTED IN INDIA</span>
-        </div>
+        
       </div>
     </footer>
   );

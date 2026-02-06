@@ -9,24 +9,25 @@ export default function HeroSlider() {
     dots: true,
     infinite: true,
     autoplay: true,
-    autoplaySpeed: 4000,
+    autoplaySpeed: 5000, // Slightly slower for a more premium feel
     fade: true,
     speed: 1000,
     arrows: false,
+    pauseOnHover: false
   };
 
   const slides = [
     {
       img: "https://images.unsplash.com/photo-1550684848-fac1c5b4e853?q=80&w=2070",
-      tag: "COLLECTION // 01",
+      tag: "TAGTURN // SS26",
       title: "TAGTURN",
-      desc: "URBAN UTILITY & STEALTH AESTHETICS"
+      desc: "TIMELESS ELEGANCE MEETS MODERN SILHOUETTES"
     },
     {
       img: "https://images.unsplash.com/photo-1483985988355-763728e1935b?q=80&w=2070",
-      tag: "COLLECTION // 02",
+      tag: "ARCHIVE // NO. 04",
       title: "ARCHIVE",
-      desc: "REDEFINING THE MODERN SILHOUETTE"
+      desc: "CURATED TEXTILES IN ORGANIC HUES"
     }
   ];
 
@@ -41,15 +42,15 @@ export default function HeroSlider() {
             
             <div className="hero-main-flex">
               <div className="floating-img-box">
-                <img src={slide.img} alt="Streetwear Model" />
+                <img src={slide.img} alt="High Fashion" />
                 <div className="img-caption">{slide.tag}</div>
               </div>
 
               <div className="hero-text-side">
                 <p className="hero-desc">{slide.desc}</p>
                 <div className="cta-group">
-                  <button className="stealth-btn">SHOP COLLECTION</button>
-                  <button className="link-btn">LOOKBOOK 2026</button>
+                  <button className="stealth-btn">DISCOVER NOW</button>
+                  <button className="link-btn">EXPLORE LOOKBOOK</button>
                 </div>
               </div>
             </div>

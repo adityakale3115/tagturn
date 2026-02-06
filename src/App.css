@@ -1,14 +1,18 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;700;900&display=swap');
 
 :root {
-  --bg-dark: #050505;
-  --surface: #111111;
-  --accent: #ff4757; /* Neon Coral */
-  --accent-glow: rgba(255, 71, 87, 0.3);
-  --text-primary: #ffffff;
-  --text-secondary: #888888;
-  --glass: rgba(20, 20, 20, 0.7);
-  --border: rgba(255, 255, 255, 0.08);
+  /* Primary Palette */
+  --bg-main: #dae5c3;       /* Soft Sage */
+  --text-primary: #670626;  /* Black Cherry */
+  
+  /* UI Accents */
+  --surface: #d2dec0;       /* Slightly darker than bg for depth */
+  --accent-glow: rgba(103, 6, 38, 0.1);
+  --text-secondary: rgba(103, 6, 38, 0.7); /* Faded version of primary */
+  
+  /* Glass & Borders adjusted for light theme */
+  --glass: rgba(255, 255, 255, 0.4);
+  --border: rgba(103, 6, 38, 0.15);
 }
 
 * {
@@ -18,24 +22,24 @@
 }
 
 body {
-  background-color: var(--bg-dark);
+  background-color: var(--bg-main);
   color: var(--text-primary);
   font-family: 'Inter', sans-serif;
   overflow-x: hidden;
   line-height: 1.6;
 }
 
-/* Custom Scrollbar for 2026 Sleekness */
+/* Custom Scrollbar - Refined for the new palette */
 ::-webkit-scrollbar {
   width: 6px;
 }
 ::-webkit-scrollbar-track {
-  background: var(--bg-dark);
+  background: var(--bg-main);
 }
 ::-webkit-scrollbar-thumb {
-  background: #222;
+  background: rgba(103, 6, 38, 0.2);
   border-radius: 10px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: var(--accent);
+  background: var(--text-primary);
 }

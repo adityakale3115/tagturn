@@ -29,7 +29,7 @@ export default function Login() {
       await signInWithEmailAndPassword(auth, email, password);
       navigate("/profile"); 
     } catch (err) {
-      setError("INVALID CREDENTIALS. ACCESS DENIED.");
+      setError("AUTHENTICATION FAILED: INVALID CREDENTIALS");
       console.error(err);
     } finally {
       setLoading(false);
@@ -43,7 +43,7 @@ export default function Login() {
       await signInWithPopup(auth, googleProvider);
       navigate("/profile");
     } catch (err) {
-      setError("GOOGLE AUTHENTICATION FAILED.");
+      setError("GOOGLE AUTHENTICATION TIMEOUT");
       console.error(err);
     } finally {
       setLoading(false);
@@ -57,10 +57,10 @@ export default function Login() {
       <div className="auth-container-stealth">
         <div className="auth-card-glass">
           <div className="auth-header">
-            <span className="stealth-tag"> ACCESS PORTAL</span>
-            <h2>IDENTIFY YOURSELF</h2>
+            <span className="stealth-tag">{"//"} SECURE ACCESS</span>
+            <h2>IDENTIFY</h2>
             <p className="auth-subtitle">
-              Enter the archive to manage your collection.
+              Enter the archive to curate your collection.
             </p>
           </div>
 
@@ -69,7 +69,7 @@ export default function Login() {
 
           <form className="auth-form" onSubmit={handleEmailLogin}>
             <div className="input-group-stealth">
-              <label>EMAIL ADDRESS</label>
+              <label>IDENTITY (EMAIL)</label>
               <input
                 type="email"
                 placeholder="identity@tagturn.com"
@@ -81,7 +81,7 @@ export default function Login() {
             </div>
 
             <div className="input-group-stealth">
-              <label>PASSWORD</label>
+              <label>ACCESS CODE (PASSWORD)</label>
               <input
                 type="password"
                 placeholder="••••••••"
@@ -96,7 +96,7 @@ export default function Login() {
               className="auth-btn-neon" 
               disabled={loading}
             >
-              {loading ? "VERIFYING..." : "VERIFY IDENTITY"}
+              {loading ? "VERIFYING..." : "ENTER ARCHIVE"}
             </button>
           </form>
 
@@ -115,12 +115,12 @@ export default function Login() {
               src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg"
               alt="Google"
             />
-            GOOGLE AUTHENTICATION
+            GOOGLE PROVIDER
           </button>
 
           <div className="auth-footer">
             <p>
-              NEW TO THE ARCHIVE? <Link to="/signup">CREATE IDENTITY</Link>
+              NEW OPERATIVE? <Link to="/signup">REGISTER IDENTITY</Link>
             </p>
           </div>
         </div>

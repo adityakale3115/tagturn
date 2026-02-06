@@ -32,7 +32,6 @@ export default function Profile() {
         if (docSnap.exists()) {
           setFormData(docSnap.data());
         } else {
-
           setFormData((prev) => ({ ...prev, email: user.email }));
         }
         setLoading(false);
@@ -46,14 +45,10 @@ export default function Profile() {
 
   const handleSave = async () => {
     if (!auth.currentUser) return;
-    
     setSaving(true);
     try {
       const userRef = doc(db, "users", auth.currentUser.uid);
-      
-
       await setDoc(userRef, formData, { merge: true });
-      
       alert("LOCAL ARCHIVE UPDATED");
     } catch (error) {
       console.error("Error updating profile:", error);
@@ -72,21 +67,32 @@ export default function Profile() {
     }
   };
 
-  if (loading) return <div className="loading-screen">SYNCING WITH ARCHIVE...</div>;
+  if (loading) {
+    return (
+      <div className="loading-screen">
+        <div className="loader-box">
+          <h2>TAGTURN</h2>
+          <p>SYNCING_ARCHIVE...</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="profile-theme-wrapper">
       <Navbar />
       
       <div className="profile-container">
-        {/* --- SIDEBAR --- */}
+        {/* --- SIDEBAR: Operational Menu --- */}
         <aside className="profile-sidebar">
           <div className="profile-id-card">
             <div className="id-avatar">
-              <Shield size={40} className="accent-icon" />
+              <Shield size={32} />
             </div>
-            <span className="stealth-tag">AUTHENTICATED</span>
-            <h2 className="user-full-name">{formData.firstName || "OPERATIVE"} {formData.lastName || "N/A"}</h2>
+            <span className="stealth-tag">{"//"} AUTHENTICATED</span>
+            <h2 className="user-full-name">
+              {formData.firstName || "OPERATIVE"} {formData.lastName || ""}
+            </h2>
             <p className="user-email-static">{formData.email}</p>
           </div>
 
@@ -106,11 +112,11 @@ export default function Profile() {
           </div>
         </aside>
 
-        {/* --- MAIN CONTENT --- */}
+        {/* --- MAIN CONTENT: Identity Modification --- */}
         <main className="profile-content">
           <header className="content-header">
-            <h1 className="content-title">EDIT IDENTITY</h1>
-            <p className="content-subtitle">Modify your archive credentials.</p>
+            <h1 className="content-title">Edit Identity</h1>
+            <p className="content-subtitle">Modify your archival credentials.</p>
           </header>
 
           <div className="stealth-form">
@@ -134,7 +140,7 @@ export default function Profile() {
             <div className="input-group">
               <label>MOBILE CONTACT</label>
               <div className="input-with-icon">
-                <Phone size={14} />
+                <Phone size={14} className="field-icon" />
                 <input
                   value={formData.mobile}
                   onChange={(e) => setFormData({ ...formData, mobile: e.target.value })}
@@ -145,7 +151,7 @@ export default function Profile() {
             <div className="input-group">
               <label>SHIPPING COORDINATES</label>
               <div className="input-with-icon">
-                <MapPin size={14} />
+                <MapPin size={14} className="field-icon" />
                 <textarea
                   rows="3"
                   value={formData.address}

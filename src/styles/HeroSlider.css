@@ -1,5 +1,5 @@
 .asymmetric-hero {
-  background-color: var(--bg-dark);
+  background-color: var(--bg-main); /* Changed from bg-dark */
   height: 100vh;
   width: 100%;
   overflow: hidden;
@@ -14,7 +14,7 @@
   justify-content: center;
 }
 
-/* Massive Background Title */
+/* Massive Background Title - Refined for Light Theme */
 .bg-title-wrap {
   position: absolute;
   top: 50%;
@@ -28,7 +28,8 @@
 .bg-title {
   font-size: clamp(8rem, 25vw, 20rem);
   font-weight: 900;
-  color: rgba(255, 255, 255, 0.03); /* Extremely subtle */
+  /* Using your black cherry with very low opacity for a watermark effect */
+  color: rgba(103, 6, 38, 0.04); 
   text-transform: uppercase;
   letter-spacing: -10px;
   line-height: 1;
@@ -55,16 +56,18 @@
   width: 100%;
   height: 100%;
   object-fit: cover;
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  box-shadow: 0 50px 100px rgba(0,0,0,0.5);
+  /* Border changed to a subtle version of the brand color */
+  border: 1px solid rgba(103, 6, 38, 0.1);
+  /* Softer shadow for a light background */
+  box-shadow: 0 30px 60px rgba(103, 6, 38, 0.12);
 }
 
 .img-caption {
   position: absolute;
   bottom: 30px;
   left: -40px;
-  background: var(--accent);
-  color: #fff;
+  background: var(--text-primary); /* Your deep burgundy */
+  color: var(--bg-main);           /* Sage text on burgundy bg */
   padding: 10px 20px;
   font-size: 10px;
   letter-spacing: 4px;
@@ -79,11 +82,11 @@
 
 .hero-desc {
   font-size: 14px;
-  letter-spacing: 2px;
+  letter-spacing: 1px;
   color: var(--text-secondary);
   margin-bottom: 40px;
   max-width: 300px;
-  line-height: 2;
+  line-height: 1.8;
 }
 
 .cta-group {
@@ -94,34 +97,41 @@
 }
 
 .stealth-btn {
-  background: #fff;
-  color: #000;
+  background: var(--text-primary); /* Burgundy button */
+  color: var(--bg-main);           /* Sage text */
   border: none;
   padding: 18px 40px;
-  font-weight: 800;
+  font-weight: 700;
   letter-spacing: 2px;
+  text-transform: uppercase;
   cursor: pointer;
-  transition: 0.3s;
+  transition: 0.4s cubic-bezier(0.23, 1, 0.32, 1);
 }
 
 .stealth-btn:hover {
-  background: var(--accent);
-  color: #fff;
-  transform: scale(1.05);
+  background: #4d041c; /* Slightly darker shade of burgundy */
+  transform: translateY(-5px);
+  box-shadow: 0 10px 20px rgba(103, 6, 38, 0.2);
 }
 
 .link-btn {
   background: transparent;
   border: none;
-  color: #fff;
-  border-bottom: 1px solid var(--accent);
+  color: var(--text-primary);
+  border-bottom: 1px solid var(--text-primary);
   padding-bottom: 5px;
   font-size: 12px;
+  font-weight: 700;
   letter-spacing: 2px;
+  text-transform: uppercase;
   cursor: pointer;
+  transition: 0.3s;
 }
 
-/* Float Animation */
+.link-btn:hover {
+  opacity: 0.6;
+}
+
 
 
 /* Responsive */
@@ -133,7 +143,7 @@
   }
   
   .floating-img-box {
-    height: 50vh;
+    height: 45vh;
     width: 100%;
   }
 
@@ -142,7 +152,7 @@
   }
   
   .bg-title {
-    font-size: 8rem;
+    font-size: 6rem;
     letter-spacing: -2px;
   }
 }

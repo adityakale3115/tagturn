@@ -1,14 +1,18 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;700;900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600;700&family=Inter:wght@300;400;600;900&display=swap');
 
 :root {
-  --bg-dark: #050505;
-  --surface: #111111;
-  --accent: #ff4757; /* Neon Coral */
-  --accent-glow: rgba(255, 71, 87, 0.3);
-  --text-primary: #ffffff;
-  --text-secondary: #888888;
-  --glass: rgba(20, 20, 20, 0.7);
-  --border: rgba(255, 255, 255, 0.08);
+  /* Brand Colors */
+  --bg-main: #dae5c3;       /* Sage Background */
+  --text-primary: #670626;  /* Black Cherry Text */
+  
+  /* UI Depth & Accents */
+  --surface: #d2dec0;       /* Slightly deeper sage for cards */
+  --accent-soft: rgba(103, 6, 38, 0.05); 
+  --text-secondary: rgba(103, 6, 38, 0.7); /* Muted burgundy */
+  
+  /* Refined Glass - Light version */
+  --glass: rgba(218, 229, 195, 0.7);
+  --border: rgba(103, 6, 38, 0.12);
 }
 
 * {
@@ -18,24 +22,33 @@
 }
 
 body {
-  background-color: var(--bg-dark);
+  background-color: var(--bg-main);
   color: var(--text-primary);
-  font-family: 'Inter', sans-serif;
+  font-family: 'Inter', sans-serif; /* Clean sans for body */
   overflow-x: hidden;
   line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
 }
 
-/* Custom Scrollbar for 2026 Sleekness */
+/* Apply the Serif to Headings for that "TAGTURN" look */
+h1, h2, .bg-title {
+  font-family: 'Cormorant Garamond', serif;
+}
+
+/* Custom Scrollbar - Refined for 2026 Minimalist Luxury */
 ::-webkit-scrollbar {
-  width: 6px;
+  width: 5px;
 }
+
 ::-webkit-scrollbar-track {
-  background: var(--bg-dark);
+  background: var(--bg-main);
 }
+
 ::-webkit-scrollbar-thumb {
-  background: #222;
-  border-radius: 10px;
+  background: rgba(103, 6, 38, 0.15); /* Subtle burgundy line */
+  border-radius: 0; /* Square edges look more architectural */
 }
+
 ::-webkit-scrollbar-thumb:hover {
-  background: var(--accent);
+  background: var(--text-primary);
 }

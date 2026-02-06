@@ -1,11 +1,7 @@
-/* ================================================= */
-/* BRAND INTRO - BENTO GRID DESIGN                   */
-/* ================================================= */
-
 .brand-intro-section {
   padding: 80px 8%;
-  background-color: var(--bg-dark); /* #050505 */
-  color: var(--text-primary);
+  background-color: var(--bg-main); /* #DAE5C3 Sage */
+  color: var(--text-primary); /* #670626 Black Cherry */
 }
 
 .bento-grid {
@@ -13,224 +9,162 @@
   max-width: 1400px;
   margin: 0 auto;
   gap: 20px;
-  /* Defining the 4-column layout structure */
   grid-template-columns: repeat(4, 1fr);
-  grid-template-rows: auto auto;
   grid-template-areas: 
     "main main verif alert"
     "long long long long";
 }
 
-/* --- BASE BENTO ITEM --- */
 .bento-item {
-  background: var(--surface); /* #111111 */
+  background: var(--surface); /* Slightly darker sage #D2DEC0 */
   border: 1px solid var(--border);
   padding: 40px;
   position: relative;
   overflow: hidden;
-  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  transition: all 0.5s cubic-bezier(0.23, 1, 0.32, 1);
 }
 
 .bento-item:hover {
-  border-color: var(--accent);
-  transform: translateY(-5px);
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+  border-color: var(--text-primary);
+  transform: translateY(-8px);
+  box-shadow: 0 20px 40px rgba(103, 6, 38, 0.1);
 }
 
-/* --- MAIN FEATURE (Top Left) --- */
+/* --- MAIN FEATURE --- */
 .main-feature {
   grid-area: main;
-  background: linear-gradient(135deg, #1a1a1a 0%, #0a0a0a 100%);
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
+  background: #cbd9b0; /* Deeper sage tone */
 }
 
 .stealth-tag {
-  color: var(--accent);
-  font-family: 'Inter', monospace;
+  color: var(--text-primary);
   font-size: 11px;
   letter-spacing: 5px;
   font-weight: 700;
+  opacity: 0.6;
 }
 
 .bento-title {
-  font-size: clamp(2rem, 4vw, 3.5rem);
-  font-weight: 900;
-  line-height: 1;
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(2.5rem, 4vw, 4rem);
+  font-weight: 700;
+  line-height: 0.9;
   margin: 15px 0;
-  text-transform: uppercase;
+  color: var(--text-primary);
 }
 
 .bento-title span {
   color: transparent;
-  -webkit-text-stroke: 1px #fff;
+  -webkit-text-stroke: 1px var(--text-primary);
 }
 
 .feature-text {
   color: var(--text-secondary);
-  font-size: 14px;
+  font-size: 15px;
   max-width: 380px;
   margin-bottom: 35px;
   line-height: 1.6;
 }
 
-.bento-cta-group {
-  display: flex;
-  gap: 15px;
-  z-index: 2;
-}
-
-.neon-fill-btn {
-  background: var(--accent);
-  color: #fff;
+.brand-fill-btn {
+  background: var(--text-primary);
+  color: var(--bg-main);
   border: none;
-  padding: 12px 25px;
+  padding: 14px 28px;
   font-size: 11px;
   font-weight: 800;
   letter-spacing: 2px;
+  text-transform: uppercase;
   cursor: pointer;
+  transition: 0.3s;
 }
 
-.stealth-outline-btn {
+.brand-outline-btn {
   background: transparent;
-  border: 1px solid #fff;
-  color: #fff;
-  padding: 12px 25px;
+  border: 1px solid var(--text-primary);
+  color: var(--text-primary);
+  padding: 14px 28px;
   font-size: 11px;
   font-weight: 800;
   letter-spacing: 2px;
+  text-transform: uppercase;
   cursor: pointer;
 }
 
 .bg-icon-watermark {
   position: absolute;
-  right: -50px;
-  bottom: -50px;
-  color: rgba(255, 255, 255, 0.03);
+  right: -30px;
+  bottom: -30px;
+  color: rgba(103, 6, 38, 0.05);
   pointer-events: none;
-  transform: rotate(-15deg);
 }
 
-/* --- VERIFIED BOX (Top Right 1) --- */
+/* --- VERIFIED BOX --- */
 .verified {
   grid-area: verif;
-  background: #000;
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-end;
-}
-
-.box-top {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  margin-bottom: 10px;
+  background: #dae5c3;
 }
 
 .verify-tag {
-  font-size: 9px;
+  font-size: 10px;
   letter-spacing: 2px;
   font-weight: 800;
-  color: var(--accent);
+  color: var(--text-primary);
 }
 
 .verified h3 {
-  font-size: 16px;
-  letter-spacing: 2px;
-  text-transform: uppercase;
-  margin-bottom: 10px;
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 20px;
+  font-weight: 700;
 }
 
-.verified p {
-  font-size: 12px;
-  color: var(--text-secondary);
-  line-height: 1.4;
-}
-
-/* --- ALERT BOX (Top Right 2) --- */
+/* --- ALERT BOX (Black Cherry Background) --- */
 .alert {
   grid-area: alert;
-  background: var(--accent);
-  color: #fff;
+  background: var(--text-primary); /* Dark Burgundy #670626 */
+  color: var(--bg-main); /* Sage text #DAE5C3 */
 }
 
-.alert h3 {
-  font-size: 12px;
+.alert-label {
+  font-size: 11px;
   letter-spacing: 2px;
-  font-weight: 800;
+  opacity: 0.8;
 }
 
-.alert p {
-  font-weight: 900;
-  font-size: 24px;
+.alert-text {
+  font-weight: 800;
+  font-size: 26px;
   margin-top: 20px;
-  line-height: 1.1;
-  text-transform: uppercase;
 }
 
 .corner-arrow {
   position: absolute;
   bottom: 20px;
   right: 20px;
-  opacity: 0.4;
+  color: var(--bg-main);
+  opacity: 0.3;
 }
 
-/* --- LONG REVOLUTION BOX (Bottom Row) --- */
+/* --- LONG BOX --- */
 .long-box {
   grid-area: long;
 }
 
-.long-content {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 60px;
-}
-
-.mini-label {
-  font-size: 10px;
-  letter-spacing: 3px;
-  color: var(--accent);
+.revolution-text h3 {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(2rem, 3vw, 2.5rem);
   font-weight: 700;
 }
 
-.revolution-text h3 {
-  font-size: clamp(1.5rem, 3vw, 2rem);
-  font-weight: 900;
-  margin-top: 10px;
-  text-transform: uppercase;
-}
-
-.revolution-desc {
-  max-width: 650px;
-}
-
-.revolution-desc p {
-  font-size: 14px;
-  color: var(--text-secondary);
-  line-height: 1.7;
-  margin-bottom: 25px;
-}
-
-.hashtag-row {
-  display: flex;
-  gap: 15px;
-  flex-wrap: wrap;
-}
-
 .hashtag-row span {
-  background: rgba(255, 255, 255, 0.05);
+  background: rgba(103, 6, 38, 0.05);
+  color: var(--text-primary);
   padding: 6px 15px;
   font-size: 10px;
   letter-spacing: 1px;
-  font-family: monospace;
 }
 
-/* ================================================= */
-/* RESPONSIVE BREAKPOINTS                            */
-/* ================================================= */
-
+/* Responsive stays the same as your structure was already solid */
 @media (max-width: 1200px) {
   .bento-grid {
     grid-template-areas: 
@@ -241,25 +175,9 @@
 }
 
 @media (max-width: 850px) {
-  .long-content {
-    flex-direction: column;
-    text-align: center;
-  }
-  
-  .hashtag-row {
-    justify-content: center;
-  }
-
   .bento-grid {
     grid-template-columns: 1fr;
-    grid-template-areas: 
-      "main"
-      "verif"
-      "alert"
-      "long";
+    grid-template-areas: "main" "verif" "alert" "long";
   }
-  
-  .bento-item {
-    padding: 30px;
-  }
+  .long-content { flex-direction: column; text-align: center; gap: 30px; }
 }
