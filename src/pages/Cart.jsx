@@ -6,7 +6,7 @@ import "../styles/Cart.css";
 
 // --- NEW IMPORTS ---
 import axios from "axios";
-import { auth, db } from "../config/firebase"; 
+import { auth, db } from "../firebase/firebaseConfig"; 
 import { doc, getDoc } from "firebase/firestore";
 
 export default function Cart() {
