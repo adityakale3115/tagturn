@@ -367,3 +367,38 @@
   .related-grid { grid-template-columns: repeat(2, 1fr); }
   .product-main-container { padding-top: 100px; }
 }
+
+/* --- SHARE BUTTON STYLES --- */
+.header-top-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+.share-btn-stealth {
+  background: transparent;
+  border: 1px solid rgba(103, 6, 38, 0.1);
+  color: var(--text-primary);
+  padding: 10px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 2px; /* Slight edge to match your UI */
+}
+
+.share-btn-stealth:hover {
+  background: var(--text-primary);
+  color: var(--bg-main);
+  border-color: var(--text-primary);
+  transform: translateY(-2px);
+}
+
+/* Ensure title doesn't overlap on small screens */
+@media (max-width: 480px) {
+  .product-name-title {
+    font-size: 2rem;
+    padding-right: 40px; /* Space for share button */
+  }
+}

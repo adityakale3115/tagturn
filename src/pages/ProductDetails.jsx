@@ -3,7 +3,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import { doc, getDoc, collection, query, where, limit, getDocs, setDoc, updateDoc, arrayUnion, serverTimestamp } from "firebase/firestore";
 import { getAuth } from "firebase/auth";
 import { db } from "../firebase/firebaseConfig";
-import { Minus, Plus, ShoppingCart, ArrowLeft, Loader2 } from "lucide-react";
+import { Minus, Plus, ShoppingCart, ArrowLeft, Loader2,Share2 } from "lucide-react";
 import { toast } from "react-toastify";
 import Navbar from "../components/Navbar";
 import "../styles/ProductDetails.css";
@@ -120,6 +120,26 @@ export default function ProductDetails() {
     }
   };
 
+  const handleShare = async () => {
+  const shareData = {
+    title: product.name,
+    text: `Check out the ${product.name} on TAGTURN`,
+    url: window.location.href,
+  };
+
+  try {
+    if (navigator.share) {
+      await navigator.share(shareData);
+    } else {
+      // Fallback: Copy to clipboard
+      await navigator.clipboard.writeText(window.location.href);
+      toast.info("LINK_COPIED_TO_CLIPBOARD");
+    }
+  } catch (err) {
+    console.error("Error sharing:", err);
+  }
+};
+
   const decreaseQty = () => quantity > 1 && setQuantity(prev => prev - 1);
   const increaseQty = () => {
     if (product && quantity < product.stock) {
@@ -181,6 +201,9 @@ export default function ProductDetails() {
           <div className="info-column">
             <div className="brand-header">
               <span className="collection-label">TAGTURN - AUTHENTIC_WEAR</span>
+              <button className="share-btn-stealth" onClick={handleShare} title="SHARE_ARTICLE">
+      <Share2 size={18} />
+    </button>
               <h1 className="product-name-title">{product.name}</h1>
               <p className="vendor-meta">ARTICLE_ID: {id?.slice(0, 12)}</p>
             </div>
@@ -213,6 +236,8 @@ export default function ProductDetails() {
                 <button onClick={increaseQty} disabled={product.stock === 0}><Plus size={14} /></button>
               </div>
             </div>
+
+            
 
             <div className="action-stack">
               <button className="bag-btn-dark" onClick={addToCart} disabled={product.stock === 0 || isAdding}>
