@@ -4,9 +4,76 @@ import { Trash2, Minus, Plus, ShoppingBag, ArrowRight, Loader2, ChevronLeft } fr
 import Navbar from "../components/Navbar";
 import "../styles/Cart.css";
 
+// --- NEW IMPORTS ---
+import axios from "axios";
+import { auth, db } from "../config/firebase"; 
+import { doc, getDoc } from "firebase/firestore";
+
 export default function Cart() {
   const navigate = useNavigate();
   const { cartItems, loading, updateQuantity, removeFromCart, totalPrice } = useCart();
+
+  // --- NEW: CHECKOUT LOGIC ---
+  const handleCheckout = async () => {
+    try {
+      const user = auth.currentUser;
+
+      // 1. Auth Check
+      if (!user) {
+        alert("ACCESS_DENIED: Please login to proceed.");
+        return navigate("/login");
+      }
+
+      // 2. Profile Completion Check
+      const userDoc = await getDoc(doc(db, "users", user.uid));
+      const userData = userDoc.data();
+
+      if (!userData?.address || !userData?.mobile) {
+        alert("INCOMPLETE_PROFILE: Please update your address and mobile number.");
+        return navigate("/profile"); 
+      }
+
+      // 3. Create Backend Order
+      const backendUrl = "https://tagturn-backend.vercel.app/api/payment/create-order";
+      const { data: order } = await axios.post(backendUrl, {
+        amount: totalPrice, 
+      });
+
+      // 4. Razorpay Configuration
+      const options = {
+        key: process.env.REACT_APP_RAZORPAY_KEY, 
+        amount: order.amount,
+        currency: "INR",
+        name: "TagTurn",
+        description: "ARCHIVE_PIECE_ACQUISITION",
+        order_id: order.id,
+        handler: async (response) => {
+          // Signature Verification
+          const verifyUrl = "https://tagturn-backend.vercel.app/api/payment/verify-payment";
+          const { data } = await axios.post(verifyUrl, response);
+          
+          if (data.success) {
+            navigate("/success");
+          } else {
+            alert("VERIFICATION_FAILED: Security protocol breach.");
+          }
+        },
+        prefill: {
+          name: `${userData.firstName} ${userData.lastName}`,
+          email: userData.email,
+          contact: userData.mobile,
+        },
+        theme: { color: "#000000" },
+      };
+
+      const rzp = new window.Razorpay(options);
+      rzp.open();
+
+    } catch (error) {
+      console.error("TRANSACTION_ERROR:", error);
+      alert("CRITICAL_FAILURE: Could not initiate checkout.");
+    }
+  };
 
   if (loading) return (
     <div className="stealth-loader">
@@ -20,7 +87,6 @@ export default function Cart() {
       <Navbar />
       <div className="cart-container">
         
-        {/* Header with Navigation */}
         <header className="cart-header">
           <button className="back-to-store" onClick={() => navigate("/")}>
             <ChevronLeft size={16} /> BACK_TO_SEARCH
@@ -38,7 +104,6 @@ export default function Cart() {
         ) : (
           <div className="cart-grid-layout">
             
-            {/* Left: Item List */}
             <div className="cart-items-column">
               {cartItems.map((item) => (
                 <div key={`${item.id}-${item.size}`} className="stealth-cart-card">
@@ -72,7 +137,6 @@ export default function Cart() {
               ))}
             </div>
 
-            {/* Right: Summary Sidebar */}
             <aside className="summary-sidebar">
               <div className="summary-glass-card">
                 <h2 className="summary-title">ORDER_SUMMARY</h2>
@@ -91,7 +155,8 @@ export default function Cart() {
                     <span>₹{totalPrice.toLocaleString()}</span>
                   </div>
                 </div>
-                <button className="checkout-btn-stealth" onClick={() => navigate("/checkout")}>
+                {/* --- TRIGGER UPDATED FUNCTION --- */}
+                <button className="checkout-btn-stealth" onClick={handleCheckout}>
                   PROCEED_TO_CHECKOUT <ArrowRight size={16} />
                 </button>
                 <p className="secure-text">ENCRYPTED_TRANSACTION_PROTOCOL_V.2.6</p>
