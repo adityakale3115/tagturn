@@ -4,13 +4,20 @@ import "../styles/CustomCursor.css";
 export default function LiquidCursor() {
   const cursorRef = useRef(null);
   const cursorDotRef = useRef(null);
+
   const [isHovered, setIsHovered] = useState(false);
   const [isClicking, setIsClicking] = useState(false);
   const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
   const [trails, setTrails] = useState([]);
+  const [isTouchActive, setIsTouchActive] = useState(false);
+
+  const isMobile =
+    typeof window !== "undefined" &&
+    ("ontouchstart" in window || navigator.maxTouchPoints > 0);
 
   useEffect(() => {
-    let animationFrameId;
+    if (isMobile) return; // ❌ Skip mouse logic on mobile
+
     let lastX = 0;
     let lastY = 0;
     let velocity = { x: 0, y: 0 };
@@ -26,22 +33,12 @@ export default function LiquidCursor() {
 
       setMousePos({ x, y });
 
-      if (cursorRef.current) {
-        cursorRef.current.style.left = `${x}px`;
-        cursorRef.current.style.top = `${y}px`;
-      }
+      cursorRef.current.style.left = `${x}px`;
+      cursorRef.current.style.top = `${y}px`;
+      cursorDotRef.current.style.left = `${x}px`;
+      cursorDotRef.current.style.top = `${y}px`;
 
-      if (cursorDotRef.current) {
-        cursorDotRef.current.style.left = `${x}px`;
-        cursorDotRef.current.style.top = `${y}px`;
-      }
-
-      addTrail(x, y, velocity);
-    };
-
-    const addTrail = (x, y, vel) => {
-      const speed = Math.sqrt(vel.x ** 2 + vel.y ** 2);
-
+      const speed = Math.hypot(velocity.x, velocity.y);
       if (speed > 2) {
         setTrails((prev) => [
           ...prev.slice(-15),
@@ -55,32 +52,15 @@ export default function LiquidCursor() {
       }
     };
 
-    const handleMouseDown = () => {
-      setIsClicking(true);
-      createRipple(mousePos.x, mousePos.y);
-    };
-
+    const handleMouseDown = () => setIsClicking(true);
     const handleMouseUp = () => setIsClicking(false);
 
     const handleMouseOver = (e) => {
-      if (
-        e.target.closest(
-          "button, a, .modern-card, .item-card, .nav-link, input, textarea, [role='button']"
+      setIsHovered(
+        !!e.target.closest(
+          "button, a, input, textarea, [role='button']"
         )
-      ) {
-        setIsHovered(true);
-      } else {
-        setIsHovered(false);
-      }
-    };
-
-    const createRipple = (x, y) => {
-      const ripple = document.createElement("div");
-      ripple.className = "cursor-ripple";
-      ripple.style.left = `${x}px`;
-      ripple.style.top = `${y}px`;
-      document.body.appendChild(ripple);
-      setTimeout(() => ripple.remove(), 800);
+      );
     };
 
     window.addEventListener("mousemove", moveCursor);
@@ -88,19 +68,44 @@ export default function LiquidCursor() {
     window.addEventListener("mouseup", handleMouseUp);
     window.addEventListener("mouseover", handleMouseOver);
 
-    const trailCleanup = setInterval(() => {
-      setTrails((prev) => prev.slice(-10));
-    }, 100);
-
     return () => {
       window.removeEventListener("mousemove", moveCursor);
       window.removeEventListener("mousedown", handleMouseDown);
       window.removeEventListener("mouseup", handleMouseUp);
       window.removeEventListener("mouseover", handleMouseOver);
-      clearInterval(trailCleanup);
-      if (animationFrameId) cancelAnimationFrame(animationFrameId);
     };
-  }, [mousePos]);
+  }, [isMobile]);
+
+  // ✅ Mobile: show cursor ONLY while touching
+  useEffect(() => {
+    if (!isMobile) return;
+
+    const handleTouchStart = (e) => {
+      const touch = e.touches[0];
+      setMousePos({ x: touch.clientX, y: touch.clientY });
+      setIsTouchActive(true);
+    };
+
+    const handleTouchMove = (e) => {
+      const touch = e.touches[0];
+      setMousePos({ x: touch.clientX, y: touch.clientY });
+    };
+
+    const handleTouchEnd = () => setIsTouchActive(false);
+
+    window.addEventListener("touchstart", handleTouchStart);
+    window.addEventListener("touchmove", handleTouchMove);
+    window.addEventListener("touchend", handleTouchEnd);
+
+    return () => {
+      window.removeEventListener("touchstart", handleTouchStart);
+      window.removeEventListener("touchmove", handleTouchMove);
+      window.removeEventListener("touchend", handleTouchEnd);
+    };
+  }, [isMobile]);
+
+  // ❌ Hide completely on mobile unless touching
+  if (isMobile && !isTouchActive) return null;
 
   return (
     <>
@@ -109,27 +114,36 @@ export default function LiquidCursor() {
         className={`liquid-cursor ${isHovered ? "hovered" : ""} ${
           isClicking ? "clicking" : ""
         }`}
+        style={{
+          left: `${mousePos.x}px`,
+          top: `${mousePos.y}px`,
+        }}
       >
-        <div className="cursor-inner"></div>
+        <div className="cursor-inner" />
       </div>
 
       <div
         ref={cursorDotRef}
-        className={`cursor-dot ${isClicking ? "clicking" : ""}`}
+        className="cursor-dot"
+        style={{
+          left: `${mousePos.x}px`,
+          top: `${mousePos.y}px`,
+        }}
       />
 
-      {trails.map((trail) => (
-        <div
-          key={trail.id}
-          className="cursor-trail"
-          style={{
-            left: `${trail.x}px`,
-            top: `${trail.y}px`,
-            width: `${trail.size}px`,
-            height: `${trail.size}px`,
-          }}
-        />
-      ))}
+      {!isMobile &&
+        trails.map((trail) => (
+          <div
+            key={trail.id}
+            className="cursor-trail"
+            style={{
+              left: `${trail.x}px`,
+              top: `${trail.y}px`,
+              width: `${trail.size}px`,
+              height: `${trail.size}px`,
+            }}
+          />
+        ))}
     </>
   );
 }
