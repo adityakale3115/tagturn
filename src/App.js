@@ -19,6 +19,8 @@ import CategoryProducts from "./pages/CategoryProducts";
 import ProductDetails from "./pages/ProductDetails";
 import { CartProvider } from "./context/CartContext";
 import SearchPage from "./components/SearchPage";
+import ShopPage from "./pages/ShopPage"; // 👈 Add this import
+import AllShops from "./pages/AllShops"; // 👈 Import new page
 
 // --- UI Effects ---
 import CustomCursor from "./components/CustomCursor";
@@ -53,10 +55,13 @@ export default function App() {
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
           <Route path="/search" element={<SearchPage />} />
+          <Route path="/vendors" element={<AllShops />} />
 
           {/* --- PRODUCT ROUTES --- */}
           <Route path="/category/:categoryName" element={<CategoryProducts />} />
           <Route path="/product/:id" element={<ProductDetails />} />
+
+          <Route path="/shop/:shopId" element={<ShopPage />} /> {/* 👈 Add this route */}
 
           {/* --- STATIC USER PAGES --- */}
           <Route path="/profile" element={<Profile />} />

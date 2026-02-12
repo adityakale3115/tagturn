@@ -93,7 +93,7 @@ export default function EditorialNavbar() {
       <div className={`nav-center ${menuOpen ? "active" : ""}`}>
         <span className="nav-link" onClick={() => handleNav("/new")}>NEW DROPS</span>
         <span className="nav-link" onClick={() => handleNav("/collections")}>COLLECTIONS</span>
-        <span className="nav-link" onClick={() => handleNav("/lookbook")}>LOOKBOOK</span>
+        <span className="nav-link" onClick={() => handleNav("/vendors")}>LOOKBOOK</span>
         
         {/* MOBILE ICONS: Only visible when mobile menu is open via CSS */}
         <div className="mobile-only-icons">

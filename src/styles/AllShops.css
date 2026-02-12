@@ -1,0 +1,102 @@
+.all-shops-container {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 140px 5% 80px;
+}
+
+.shops-header {
+  text-align: left;
+  margin-bottom: 80px;
+  border-left: 1px solid var(--text-primary);
+  padding-left: 30px;
+}
+
+.archive-tag {
+  font-family: monospace;
+  font-size: 11px;
+  letter-spacing: 3px;
+  opacity: 0.6;
+}
+
+.archive-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(3rem, 8vw, 5rem);
+  text-transform: uppercase;
+  line-height: 0.9;
+  margin: 15px 0;
+}
+
+.shops-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 30px;
+}
+
+/* --- SHOP CARD DESIGN --- */
+.shop-card {
+  background: var(--bg-main);
+  border: 1px solid rgba(103, 6, 38, 0.1);
+  padding: 40px;
+  position: relative;
+  overflow: hidden;
+  cursor: pointer;
+  transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  min-height: 250px;
+}
+
+.shop-card:hover {
+  background: var(--text-primary);
+  border-color: var(--text-primary);
+  transform: translateY(-10px);
+}
+
+.shop-card:hover .shop-card-name,
+.shop-card:hover .shop-card-email,
+.shop-card:hover .shop-card-icon,
+.shop-card:hover .shop-card-footer {
+  color: var(--bg-main);
+}
+
+.shop-card-icon {
+  color: var(--text-primary);
+  margin-bottom: 20px;
+  transition: 0.3s;
+}
+
+.shop-card-name {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 2rem;
+  margin-bottom: 10px;
+  text-transform: uppercase;
+}
+
+.shop-card-email {
+  font-family: monospace;
+  font-size: 11px;
+  opacity: 0.6;
+  margin-bottom: 30px;
+}
+
+.shop-card-footer {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 2px;
+}
+
+/* Background watermark effect */
+.shop-card-bg-text {
+  position: absolute;
+  bottom: -20px;
+  right: -10px;
+  font-size: 8rem;
+  font-weight: 900;
+  opacity: 0.03;
+  pointer-events: none;
+  text-transform: uppercase;
+}

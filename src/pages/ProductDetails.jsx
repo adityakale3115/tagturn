@@ -3,7 +3,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import { doc, getDoc, collection, query, where, limit, getDocs, setDoc, updateDoc, arrayUnion, serverTimestamp } from "firebase/firestore";
 import { getAuth } from "firebase/auth";
 import { db } from "../firebase/firebaseConfig";
-import { Minus, Plus, ShoppingCart, ArrowLeft, Loader2,Share2 } from "lucide-react";
+import { Minus, Plus, ShoppingCart, ArrowLeft, Loader2, Share2, Ruler, User } from "lucide-react";
 import { toast } from "react-toastify";
 import Navbar from "../components/Navbar";
 import "../styles/ProductDetails.css";
@@ -14,6 +14,7 @@ export default function ProductDetails() {
   const auth = getAuth();
 
   const [product, setProduct] = useState(null);
+  const [shopName, setShopName] = useState("Official Store"); // State for vendor name
   const [relatedProducts, setRelatedProducts] = useState([]); 
   const [quantity, setQuantity] = useState(1);
   const [selectedSize, setSelectedSize] = useState("");
@@ -38,7 +39,6 @@ export default function ProductDetails() {
     return () => clearInterval(interval);
   }, [loading]);
 
- 
   useEffect(() => {
     const fetchFullProductData = async () => {
       window.scrollTo(0, 0);
@@ -51,6 +51,15 @@ export default function ProductDetails() {
           setProduct(productData);
           setActiveImage(productData.images?.[0] || "");
           
+          // FETCH SHOP NAME from Vendors Collection
+          if (productData.shop_id) {
+            const vendorRef = doc(db, "vendors", productData.shop_id);
+            const vendorSnap = await getDoc(vendorRef);
+            if (vendorSnap.exists()) {
+              setShopName(vendorSnap.data().shopName);
+            }
+          }
+
           const relatedQuery = query(
             collection(db, "products"),
             where("category", "==", productData.category),
@@ -74,6 +83,24 @@ export default function ProductDetails() {
 
     if (id) fetchFullProductData();
   }, [id, navigate]);
+
+  const handleShare = async () => {
+    const shareData = {
+      title: product.name,
+      text: `Check out the ${product.name} on TAGTURN`,
+      url: window.location.href,
+    };
+    try {
+      if (navigator.share) {
+        await navigator.share(shareData);
+      } else {
+        await navigator.clipboard.writeText(window.location.href);
+        toast.info("LINK_COPIED_TO_CLIPBOARD");
+      }
+    } catch (err) {
+      console.error("Error sharing:", err);
+    }
+  };
 
   const addToCart = async () => {
     const user = auth.currentUser;
@@ -120,26 +147,6 @@ export default function ProductDetails() {
     }
   };
 
-  const handleShare = async () => {
-  const shareData = {
-    title: product.name,
-    text: `Check out the ${product.name} on TAGTURN`,
-    url: window.location.href,
-  };
-
-  try {
-    if (navigator.share) {
-      await navigator.share(shareData);
-    } else {
-      // Fallback: Copy to clipboard
-      await navigator.clipboard.writeText(window.location.href);
-      toast.info("LINK_COPIED_TO_CLIPBOARD");
-    }
-  } catch (err) {
-    console.error("Error sharing:", err);
-  }
-};
-
   const decreaseQty = () => quantity > 1 && setQuantity(prev => prev - 1);
   const increaseQty = () => {
     if (product && quantity < product.stock) {
@@ -154,13 +161,8 @@ export default function ProductDetails() {
       <div className="preloader-box">
         <span className="boot-tag">DECRYPTING_ARTICLE: {id?.slice(0, 8)}</span>
         <h2 className="boot-logo">TAGTURN</h2>
-        <div className="boot-bar-bg">
-          <div className="boot-bar-fill" style={{ width: `${percent}%` }}></div>
-        </div>
-        <div className="boot-stats">
-          <span>STATUS: INITIALIZING</span>
-          <span>{percent}%</span>
-        </div>
+        <div className="boot-bar-bg"><div className="boot-bar-fill" style={{ width: `${percent}%` }}></div></div>
+        <div className="boot-stats"><span>STATUS: INITIALIZING</span><span>{percent}%</span></div>
       </div>
     </div>
   );
@@ -200,12 +202,25 @@ export default function ProductDetails() {
 
           <div className="info-column">
             <div className="brand-header">
-              <span className="collection-label">TAGTURN - AUTHENTIC_WEAR</span>
-              <button className="share-btn-stealth" onClick={handleShare} title="SHARE_ARTICLE">
-      <Share2 size={18} />
-    </button>
+              <div className="header-top-row">
+                <span className="collection-label">TAGTURN - AUTHENTIC_WEAR</span>
+                <button className="share-btn-stealth" onClick={handleShare} title="SHARE_ARTICLE">
+                  <Share2 size={18} />
+                </button>
+              </div>
               <h1 className="product-name-title">{product.name}</h1>
-              <p className="vendor-meta">ARTICLE_ID: {id?.slice(0, 12)}</p>
+              <div className="vendor-meta-group">
+  <p className="vendor-meta">ARTICLE_ID: {id?.slice(0, 12)}</p>
+  <p className="vendor-name-tag">
+    SOURCE: 
+    <span 
+      className="shop-redirect-link" 
+      onClick={() => navigate(`/shop/${product.shop_id}`)}
+    >
+      {shopName}
+    </span>
+  </p>
+</div>
             </div>
 
             <div className="price-box">
@@ -213,9 +228,55 @@ export default function ProductDetails() {
               {product.original_price && <span className="price-original">₹{product.original_price.toLocaleString()}</span>}
             </div>
 
-            <div className={`stock-status ${product.stock < 5 ? "critical" : ""}`}>
-              {product.stock > 0 ? `AVAILABILITY: [ ${product.stock} UNITS ]` : "STATUS: ARCHIVED"}
+            <div className="meta-spec-grid">
+               {product.gender && (
+                 <div className="meta-spec-item">
+                    <User size={14} /> <span>{product.gender.toUpperCase()}</span>
+                 </div>
+               )}
+               <div className={`stock-status ${product.stock < 5 ? "critical" : ""}`}>
+                 {product.stock > 0 ? `[ ${product.stock} UNITS ]` : "ARCHIVED"}
+               </div>
             </div>
+
+            {/* Condition Meter */}
+            {product.condition && (
+              <div className="config-group">
+                <p className="config-label">ARTICLE_CONDITION</p>
+                <div className="condition-meter-container">
+                  <div className="meter-track">
+                    <div className="meter-fill" style={{ width: `${(product.condition / 10) * 100}%` }}></div>
+                  </div>
+                  <div className="meter-stats">
+                    <span className="condition-value">{product.condition} / 10</span>
+                    <span className="condition-desc">
+                      {product.condition >= 9 ? "Pristine" : product.condition >= 7 ? "EXCELLENT" : product.condition >= 5 ? "GOOD" : "FAIR"}
+                    </span>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* Measurements Section */}
+            {(product.chest || product.length) && (
+              <div className="config-group">
+                <p className="config-label">TECH_MEASUREMENTS (INCHES)</p>
+                <div className="measurement-grid">
+                  {product.chest && (
+                    <div className="measure-box">
+                      <span className="m-label">CHEST</span>
+                      <span className="m-value">{product.chest}"</span>
+                    </div>
+                  )}
+                  {product.length && (
+                    <div className="measure-box">
+                      <span className="m-label">LENGTH</span>
+                      <span className="m-value">{product.length}"</span>
+                    </div>
+                  )}
+                </div>
+              </div>
+            )}
 
             <div className="config-group">
               <p className="config-label">SIZE_SPECIFICATION</p>
@@ -237,8 +298,6 @@ export default function ProductDetails() {
               </div>
             </div>
 
-            
-
             <div className="action-stack">
               <button className="bag-btn-dark" onClick={addToCart} disabled={product.stock === 0 || isAdding}>
                 {isAdding ? <Loader2 className="animate-spin" size={16} /> : <ShoppingCart size={16} />} 
@@ -251,7 +310,6 @@ export default function ProductDetails() {
           </div>
         </div>
 
-        {/* RELATED PRODUCTS SECTION - using the relatedProducts variable now */}
         {relatedProducts.length > 0 && (
           <div className="related-section">
             <h2 className="related-title">COMPLETE_THE_LOOK</h2>
@@ -259,10 +317,7 @@ export default function ProductDetails() {
               {relatedProducts.map(item => (
                 <div key={item.id} className="related-card" onClick={() => navigate(`/product/${item.id}`)}>
                    <img src={item.images?.[0]} alt={item.name} />
-                   <div className="related-info">
-                     <p>{item.name}</p>
-                     <span>₹{item.price}</span>
-                   </div>
+                   <div className="related-info"><p>{item.name}</p><span>₹{item.price}</span></div>
                 </div>
               ))}
             </div>

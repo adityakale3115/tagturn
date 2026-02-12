@@ -13,7 +13,6 @@ export default function RandomProduct() {
   useEffect(() => {
     const fetchRandomProducts = async () => {
       try {
-        // Fetch a pool of 15 products to pick from
         const q = query(collection(db, "products"), limit(15));
         const querySnapshot = await getDocs(q);
         const productList = querySnapshot.docs.map(doc => ({
@@ -21,7 +20,6 @@ export default function RandomProduct() {
           ...doc.data()
         }));
         
-        // Shuffle the array and pick the first 4
         const shuffled = productList.sort(() => 0.5 - Math.random());
         setProducts(shuffled.slice(0, 4)); 
       } catch (error) {
@@ -33,6 +31,14 @@ export default function RandomProduct() {
 
     fetchRandomProducts();
   }, []);
+
+  // Helper to get condition label
+  const getConditionLabel = (rating) => {
+    if (rating >= 9) return "PRISTINE";
+    if (rating >= 7) return "EXCELLENT";
+    if (rating >= 5) return "GOOD";
+    return "FAIR";
+  };
 
   if (loading) return (
     <div className="random-loader">
@@ -58,12 +64,27 @@ export default function RandomProduct() {
             onClick={() => navigate(`/product/${item.id}`)}
           >
             <div className="random-media">
-              {/* Uses the images array from your Firestore structure */}
               <img src={item.images?.[0]} alt={item.name} />
               <div className="random-badge">NEW_ENTRY</div>
+              
+              {/* NEW: Condition Tag on Image */}
+              {item.condition && (
+                <div className="condition-tag">
+                  COND: {item.condition}/10
+                </div>
+              )}
             </div>
+            
             <div className="random-info">
-              <p className="random-name">{item.name}</p>
+              <div className="info-top-row">
+                <p className="random-name">{item.name}</p>
+                {/* Visual Label for condition */}
+                {item.condition && (
+                   <span className="condition-label-text">
+                     {getConditionLabel(item.condition)}
+                   </span>
+                )}
+              </div>
               <p className="random-price">₹{item.price?.toLocaleString()}</p>
             </div>
           </div>

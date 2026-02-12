@@ -149,3 +149,54 @@
   .random-grid { gap: 10px; }
   .random-product-section { padding: 40px 4%; }
 }
+
+/* --- CONDITION STYLES --- */
+
+/* Tag placed on the bottom left of the image */
+.condition-tag {
+  position: absolute;
+  bottom: 10px;
+  left: 10px;
+  background: rgba(255, 255, 255, 0.9);
+  color: var(--text-primary);
+  font-family: monospace;
+  font-size: 9px;
+  padding: 2px 6px;
+  border: 1px solid var(--text-primary);
+  font-weight: 700;
+  letter-spacing: 1px;
+}
+
+/* Row for Name and Label */
+.info-top-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 10px;
+  margin-bottom: 5px;
+}
+
+.random-name {
+  flex: 1; /* Allow name to take available space */
+  margin-bottom: 0 !important; /* Overriding previous margin */
+}
+
+/* Small text label next to the name */
+.condition-label-text {
+  font-size: 8px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  color: var(--text-secondary);
+  border: 1px solid rgba(103, 6, 38, 0.2);
+  padding: 1px 4px;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+/* Responsive fix for the info row */
+@media (max-width: 768px) {
+  .info-top-row {
+    flex-direction: column;
+    gap: 2px;
+  }
+}
