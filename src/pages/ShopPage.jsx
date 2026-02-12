@@ -16,12 +16,12 @@ export default function ShopPage() {
   useEffect(() => {
     const fetchShopData = async () => {
       try {
-        // Fetch Vendor Info from 'vendors' collection
+        // Fetch Vendor Info from 'vendors' collection based on Auth UID
         const vendorRef = doc(db, "vendors", shopId);
         const vendorSnap = await getDoc(vendorRef);
         if (vendorSnap.exists()) setVendor(vendorSnap.data());
 
-        // Fetch Products uploaded by this shop
+        // Fetch Products filtered by the shop_id field
         const q = query(collection(db, "products"), where("shop_id", "==", shopId));
         const querySnapshot = await getDocs(q);
         const items = querySnapshot.docs.map(d => ({ id: d.id, ...d.data() }));
@@ -36,7 +36,10 @@ export default function ShopPage() {
   }, [shopId]);
 
   if (loading) return (
-    <div className="stealth-preloader"><Loader2 className="animate-spin" size={32} /></div>
+    <div className="stealth-preloader">
+      <Loader2 className="animate-spin" size={32} />
+      <span className="boot-tag">DECRYPTING_SHOP_ARCHIVE...</span>
+    </div>
   );
 
   return (
@@ -48,25 +51,35 @@ export default function ShopPage() {
         </button>
 
         <header className="shop-header">
-          <span className="vendor-hex">// SRC_ID: {shopId.slice(0, 8)}</span>
+          {/* FIXED: Comments inside children section must be in braces */}
+          <span className="vendor-hex">
+            {/* SRC_ID REFERENCE */}
+            // SRC_ID: {shopId?.slice(0, 8)}
+          </span>
           <h1 className="shop-title">{vendor?.shopName || "AUTHENTIC_SOURCE"}</h1>
           <p className="shop-contact">{vendor?.email}</p>
           <div className="shop-count">ARCHIVED_ENTRIES: [ {products.length} ]</div>
         </header>
 
         <div className="product-grid-stealth">
-          {products.map((item) => (
-            <div key={item.id} className="item-card" onClick={() => navigate(`/product/${item.id}`)}>
-              <div className="item-img-container">
-                <img src={item.images?.[0]} alt={item.name} />
-                {item.condition && <span className="cond-tag">C:{item.condition}/10</span>}
+          {products.length > 0 ? (
+            products.map((item) => (
+              <div key={item.id} className="item-card" onClick={() => navigate(`/product/${item.id}`)}>
+                <div className="item-img-container">
+                  <img src={item.images?.[0]} alt={item.name} />
+                  {item.condition && <span className="cond-tag">C:{item.condition}/10</span>}
+                </div>
+                <div className="item-meta">
+                  <h3>{item.name}</h3>
+                  <p>₹{item.price?.toLocaleString()}</p>
+                </div>
               </div>
-              <div className="item-meta">
-                <h3>{item.name}</h3>
-                <p>₹{item.price?.toLocaleString()}</p>
-              </div>
+            ))
+          ) : (
+            <div className="empty-archive">
+              <p>// STATUS: NO_ENTRIES_FOUND_FOR_THIS_SOURCE</p>
             </div>
-          ))}
+          )}
         </div>
       </div>
     </div>

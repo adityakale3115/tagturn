@@ -3,7 +3,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import { doc, getDoc, collection, query, where, limit, getDocs, setDoc, updateDoc, arrayUnion, serverTimestamp } from "firebase/firestore";
 import { getAuth } from "firebase/auth";
 import { db } from "../firebase/firebaseConfig";
-import { Minus, Plus, ShoppingCart, ArrowLeft, Loader2, Share2, Ruler, User } from "lucide-react";
+import { Minus, Plus, ShoppingCart, ArrowLeft, Loader2, Share2, User } from "lucide-react";
 import { toast } from "react-toastify";
 import Navbar from "../components/Navbar";
 import "../styles/ProductDetails.css";

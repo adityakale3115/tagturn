@@ -45,7 +45,7 @@ export default function AllShops() {
       <Navbar />
       <div className="all-shops-container">
         <header className="shops-header">
-          <span className="archive-tag">// DIRECTORY: REGISTERED_VENDORS</span>
+          <span className="archive-tag">{/* DIRECTORY: REGISTERED_VENDORS */}// DIRECTORY: REGISTERED_VENDORS</span>
           <h1 className="archive-title">VENDORS_ARCHIVE</h1>
           <p className="archive-subtitle">Browse curated collections from our verified archival sources.</p>
         </header>
@@ -76,7 +76,7 @@ export default function AllShops() {
             ))
           ) : (
             <div className="no-shops">
-               <p>// ERROR: NO_APPROVED_VENDORS_FOUND</p>
+               <p>{/* ERROR: NO_APPROVED_VENDORS_FOUND */}// ERROR: NO_APPROVED_VENDORS_FOUND</p>
             </div>
           )}
         </div>
