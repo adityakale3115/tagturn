@@ -16,12 +16,10 @@ export default function ShopPage() {
   useEffect(() => {
     const fetchShopData = async () => {
       try {
-        // Fetch Vendor Info from 'vendors' collection based on Auth UID
         const vendorRef = doc(db, "vendors", shopId);
         const vendorSnap = await getDoc(vendorRef);
         if (vendorSnap.exists()) setVendor(vendorSnap.data());
 
-        // Fetch Products filtered by the shop_id field
         const q = query(collection(db, "products"), where("shop_id", "==", shopId));
         const querySnapshot = await getDocs(q);
         const items = querySnapshot.docs.map(d => ({ id: d.id, ...d.data() }));
@@ -54,7 +52,7 @@ export default function ShopPage() {
           {/* FIXED: Comments inside children section must be in braces */}
           <span className="vendor-hex">
             {/* SRC_ID REFERENCE */}
-            // SRC_ID: {shopId?.slice(0, 8)}
+            SRC_ID: {shopId?.slice(0, 8)}
           </span>
           <h1 className="shop-title">{vendor?.shopName || "AUTHENTIC_SOURCE"}</h1>
           <p className="shop-contact">{vendor?.email}</p>
@@ -77,7 +75,7 @@ export default function ShopPage() {
             ))
           ) : (
             <div className="empty-archive">
-              <p>// STATUS: NO_ENTRIES_FOUND_FOR_THIS_SOURCE</p>
+              <p>STATUS: NO_ENTRIES_FOUND_FOR_THIS_SOURCE</p>
             </div>
           )}
         </div>
